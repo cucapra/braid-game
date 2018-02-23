@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "noImplicitReturns": true,
+
+        "allowJs": true,
+        "outDir": "build",
+
+        "lib": ["dom", "es2015"],
+
+        "plugins": [
+            { "name": "tslint-language-service" }
+        ]
+    },
+    "files": [
+        "cli/braid.ts",
+        "parser.js"
+    ]
+}
