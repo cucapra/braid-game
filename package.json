@@ -1,5 +1,5 @@
 {
-  "name": "braid-example",
+  "name": "braid-game",
   "version": "1.0.0",
   "main": "build/example.js",
   "license": "MIT",
@@ -7,10 +7,10 @@
   "dependencies": {
     "braid-glrt": "latest",
     "gl-matrix": "^2.4.0",
-    "jquery": "^3.3.1",
-    "simple-autoreload-server": "^0.2.7"
+    "jquery": "^3.3.1"
   },
   "devDependencies": {
+    "@types/gl-matrix": "^2.4.0",
     "@types/jquery": "^3.3.0",
     "typescript": "^2.7.1",
     "webpack": "^3.10.0"

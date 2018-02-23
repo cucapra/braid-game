@@ -93,7 +93,6 @@ export class PerspCamera {
     }
     
     public control(dir:string) {
-        console.log(dir);
         if (dir == 'a') { // 'left'
             this.slide(-0.002);
         }

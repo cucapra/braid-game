@@ -1,7 +1,7 @@
 import glrt from 'braid-glrt';
 import braid_func from './render';
 import { mat4,vec3 } from 'gl-matrix';
-import { PerspCamera } from './bettercamera'
+import { PerspCamera } from './camera';
 
 function getCamera() {
     let eye = vec3.fromValues(0.5, 0.5, 0.5);
@@ -59,5 +59,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("keypress", (event) => {
   camera.control(event.key);
-  console.log(event.key);
 });

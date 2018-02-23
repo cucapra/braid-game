@@ -4,11 +4,8 @@
         "noImplicitReturns": true,
         "outDir": "build",
         "module": "commonjs",
-
         "allowJs": true,
-
         "lib": ["dom", "es2015"],
-
         "plugins": [
             { "name": "tslint-language-service" }
         ]
