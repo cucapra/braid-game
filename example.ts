@@ -1,10 +1,11 @@
 import glrt from 'braid-glrt';
+import { Assets, load_asset } from 'braid-glrt';
 import braid_func from './render';
 import { mat4,vec3 } from 'gl-matrix';
 import { PerspCamera } from './camera';
 
 function getCamera() {
-    let eye = vec3.fromValues(0.5, 0.5, 0.5);
+    let eye = vec3.fromValues(10, 20, -9);
     let target = vec3.fromValues(0, 0, 0);
     let up = vec3.fromValues(0, 1, 0);
     let camera = new PerspCamera(eye, target, up, 0.01, 1000);
@@ -12,13 +13,12 @@ function getCamera() {
 }
 let camera = getCamera();
 
-function example(canvas: HTMLCanvasElement) {
+function example(canvas: HTMLCanvasElement, assets: Assets) {
   // Get the WebGL context.
   let gl = (canvas.getContext("webgl") ||
     canvas.getContext("experimental-webgl")) as WebGLRenderingContext;
 
   // Load a Braid runtime object.
-  let assets = {};
   let rt = glrt(gl, assets, (n) => {});
 
   // A projection matrix.
@@ -34,7 +34,7 @@ function example(canvas: HTMLCanvasElement) {
     let width = gl.drawingBufferWidth;
     let height = gl.drawingBufferHeight;
     gl.viewport(0, 0, width, height);
-
+    camera.update();
     camera.getViewMatrix(view);
     camera.getProjMatrix(projection, width, height);
     // Rendering flags.
@@ -51,10 +51,18 @@ function example(canvas: HTMLCanvasElement) {
   window.requestAnimationFrame(render);
 }
 
+function load_assets_and_run(canvas: HTMLCanvasElement, to_load: Array<string>) {
+    let assets: Assets = {};
+    let to_load_promise = to_load.map((r)=>{
+        return load_asset(r).then((a)=> {assets[r]=a});
+    });
+    Promise.all(to_load_promise).then(() => example(canvas, assets));
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   let canvas = document.getElementsByTagName("canvas")[0];
   console.log("done loading");
-  example(canvas);
+  load_assets_and_run(canvas, ["teapot.obj"]);
 });
 
 document.addEventListener("keypress", (event) => {

@@ -9,6 +9,7 @@ export class PerspCamera {
     far : number;
 
     readonly fov : number = Math.PI / 6;
+    controls : {[control : string]: boolean}
 
     constructor(eye:vec3, target:vec3, up:vec3, near:number, far:number) {
         this.eye = vec3.clone(eye);
@@ -16,6 +17,7 @@ export class PerspCamera {
         this.up = vec3.clone(up);
         this.near = near;
         this.far = far;
+        this.controls = {"up": false, "down": false, "left": false, "right": false, "rleft": false, "rright": false}
     }
 
     public getEye() { return this.eye; }
@@ -92,29 +94,61 @@ export class PerspCamera {
         vec3.add(this.target, targetV, this.eye);
     }
     
+    public update() {
+        if (this.controls["left"]) { // 'left'
+            this.slide(-0.15);
+            this.controls["left"] = false;
+        }
+
+        if (this.controls["up"]) { // 'up'
+            this.dolly(0.15);
+            this.controls["up"] = false;
+        }
+
+        if (this.controls["right"]) { // 'right'
+            this.slide(0.15);
+            this.controls["right"] = false;
+        }
+
+        if (this.controls["down"]) { // 'down'
+            this.dolly(-0.15);
+            this.controls["down"] = false;
+        }
+        
+        if (this.controls["rleft"]) { // 'rotate left'
+            this.rotate(0.01);
+            this.controls["rleft"] = false;
+        }
+
+        if (this.controls["rright"]) { // 'rotate right'
+            this.rotate(-0.01);
+            this.controls["rright"] = false;
+        }
+    }
+    
     public control(dir:string) {
         if (dir == 'a') { // 'left'
-            this.slide(-0.002);
+            this.controls["left"] = true;
         }
 
         if (dir == 'w') { // 'up'
-            this.dolly(0.01);
+            this.controls["up"] = true;
         }
 
         if (dir == 'd') { // 'right'
-            this.slide(0.002);
+            this.controls["right"] = true;
         }
 
         if (dir == 's') { // 'down'
-            this.dolly(-0.01);
+            this.controls["down"] = true;
         }
         
-        if (dir == 'q') { // 'right'
-            this.rotate(0.01);
+        if (dir == 'q') { // 'rotate left'
+            this.controls["rleft"] = true;
         }
 
-        if (dir == 'e') { // 'down'
-            this.rotate(-0.01);
+        if (dir == 'e') { // 'rotate right'
+            this.controls["rright"] = true;
         }
     }
 }
