@@ -35,7 +35,6 @@ function example(canvas: HTMLCanvasElement, assets: Assets) {
     let height = gl.drawingBufferHeight;
     gl.viewport(0, 0, width, height);
     camera.update();
-    camera.tick();
     camera.getViewMatrix(view);
     camera.getProjMatrix(projection, width, height);
     // Rendering flags.

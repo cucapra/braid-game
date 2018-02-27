@@ -134,6 +134,7 @@ export class PerspCamera {
         if (this.controls["rright"]) { // 'rotate right'
             this.rotateRad += (-0.01);
         }
+        this.tick();
     }
 
     public control(dir: string, pressed: boolean) {
