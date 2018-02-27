@@ -8,7 +8,7 @@ export class PerspCamera {
     near : number;
     far : number;
 
-    readonly fov : number = Math.PI / 6;
+    readonly fov : number = Math.PI / 4;
     controls : {[control : string]: boolean}
 
     constructor(eye:vec3, target:vec3, up:vec3, near:number, far:number) {

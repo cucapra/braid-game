@@ -5,7 +5,7 @@ import { mat4,vec3 } from 'gl-matrix';
 import { PerspCamera } from './camera';
 
 function getCamera() {
-    let eye = vec3.fromValues(10, 20, -9);
+    let eye = vec3.fromValues(20, 5, -10);
     let target = vec3.fromValues(0, 0, 0);
     let up = vec3.fromValues(0, 1, 0);
     let camera = new PerspCamera(eye, target, up, 0.01, 1000);
@@ -62,7 +62,8 @@ function load_assets_and_run(canvas: HTMLCanvasElement, to_load: Array<string>) 
 document.addEventListener("DOMContentLoaded", () => {
   let canvas = document.getElementsByTagName("canvas")[0];
   console.log("done loading");
-  load_assets_and_run(canvas, ["teapot.obj"]);
+  load_assets_and_run(canvas, ["teapot.obj", "wood1.png", "skyBox.obj","posx.jpg", "posx.jpg","negx.jpg", "posy.jpg", 
+  "negy.jpg", "posz.jpg", "negz.jpg"]);
 });
 
 document.addEventListener("keypress", (event) => {
