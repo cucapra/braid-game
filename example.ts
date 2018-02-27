@@ -35,6 +35,7 @@ function example(canvas: HTMLCanvasElement, assets: Assets) {
     let height = gl.drawingBufferHeight;
     gl.viewport(0, 0, width, height);
     camera.update();
+    camera.tick();
     camera.getViewMatrix(view);
     camera.getProjMatrix(projection, width, height);
     // Rendering flags.
@@ -66,6 +67,10 @@ document.addEventListener("DOMContentLoaded", () => {
   "negy.jpg", "posz.jpg", "negz.jpg"]);
 });
 
-document.addEventListener("keypress", (event) => {
-  camera.control(event.key);
-});
+window.onkeydown = (e) => {
+  camera.control(e.key, true);  
+};
+
+window.onkeyup = (e) => {
+  camera.control(e.key, false);
+};
