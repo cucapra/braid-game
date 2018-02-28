@@ -1,7 +1,7 @@
 import glrt from 'braid-glrt';
 import { Assets, load_asset } from 'braid-glrt';
 import braid_func from './render';
-import { mat4,vec3 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 import { PerspCamera } from './camera';
 
 function getCamera() {
@@ -47,14 +47,14 @@ function example(canvas: HTMLCanvasElement, assets: Assets) {
     // Ask to be run again.
     window.requestAnimationFrame(render);
   }
-  
+
   window.requestAnimationFrame(render);
 }
 
 function load_assets_and_run(canvas: HTMLCanvasElement, to_load: Array<string>) {
     let assets: Assets = {};
-    let to_load_promise = to_load.map((r)=>{
-        return load_asset(r).then((a)=> {assets[r]=a});
+    let to_load_promise = to_load.map((r) => {
+        return load_asset(r).then((a) => {assets[r] = a; });
     });
     Promise.all(to_load_promise).then(() => example(canvas, assets));
 }
@@ -62,12 +62,12 @@ function load_assets_and_run(canvas: HTMLCanvasElement, to_load: Array<string>) 
 document.addEventListener("DOMContentLoaded", () => {
   let canvas = document.getElementsByTagName("canvas")[0];
   console.log("done loading");
-  load_assets_and_run(canvas, ["teapot.obj", "wood1.png", "skyBox.obj","posx.jpg", "posx.jpg","negx.jpg", "posy.jpg", 
+  load_assets_and_run(canvas, ["teapot.obj", "wood1.png", "skyBox.obj", "posx.jpg", "posx.jpg", "negx.jpg", "posy.jpg",
   "negy.jpg", "posz.jpg", "negz.jpg"]);
 });
 
 window.onkeydown = (e) => {
-  camera.control(e.key, true);  
+  camera.control(e.key, true);
 };
 
 window.onkeyup = (e) => {
