@@ -19,6 +19,7 @@ export class PerspCamera {
         this.eye = vec3.clone(eye);
         this.target = vec3.clone(target);
         this.up = vec3.clone(up);
+        vec3.normalize(this.up, this.up);
         this.near = near;
         this.far = far;
         this.dollyDist = 0
@@ -71,11 +72,17 @@ export class PerspCamera {
         vec3.sub(out, this.target, this.eye);
         vec3.normalize(out, out);
     }
+    //get direction in the look direction but
+    //perpendicular to the up vector
+    private getMoveAt(out: vec3) {
+        this.getLookAt(out);
+        vec3.scaleAndAdd(out, out, this.up, -vec3.dot(out, this.up));
+    }
 
     // moves eye and target along the look direction
     public dolly(distance: number) {
         let dir: vec3 = vec3.create();
-        this.getLookAt(dir);
+        this.getMoveAt(dir);
         vec3.scale(dir, dir, distance);
         this.translate(dir);
     }
