@@ -7,13 +7,12 @@ export class PerspCamera {
     up: vec3;
     near: number;
     far: number;
-    dollyDist: number;
-    slideDist: number;
-    rotateRad: number;
-
 
     readonly fov: number = Math.PI / 4;
-    controls: { [control: string]: boolean }
+    readonly DOLLY_RATE = 0.15;
+    readonly SLIDE_RATE = 0.15;
+    readonly ROTATE_RATE = 0.01;
+    controls: { [control: string]: boolean };
 
     constructor(eye: vec3, target: vec3, up: vec3, near: number, far: number) {
         this.eye = vec3.clone(eye);
@@ -22,10 +21,7 @@ export class PerspCamera {
         vec3.normalize(this.up, this.up);
         this.near = near;
         this.far = far;
-        this.dollyDist = 0
-        this.slideDist = 0
-        this.rotateRad = 0
-        this.controls = { "up": false, "down": false, "left": false, "right": false, "rleft": false, "rright": false }
+        this.controls = { "up": false, "down": false, "left": false, "right": false, "rleft": false, "rright": false };
     }
 
     public getEye() { return this.eye; }
@@ -46,7 +42,7 @@ export class PerspCamera {
         this.getProjMatrix(out, width, height);
         let temp: mat4 = mat4.create();
         this.getViewMatrix(temp);
-        mat4.mul(out, out, temp)
+        mat4.mul(out, out, temp);
     }
 
     public zoom(delta: number) {
@@ -67,7 +63,7 @@ export class PerspCamera {
         vec3.add(this.target, this.target, delta);
     }
 
-    //get the look direction
+    // get the look direction
     private getLookAt(out: vec3) {
         vec3.sub(out, this.target, this.eye);
         vec3.normalize(out, out);
@@ -108,64 +104,54 @@ export class PerspCamera {
         vec3.add(this.target, targetV, this.eye);
     }
 
-    public tick() {
-        this.dolly(this.dollyDist);
-        this.slide(this.slideDist);
-        this.rotate(this.rotateRad);
-        this.dollyDist = 0;
-        this.slideDist = 0;
-        this.rotateRad = 0;
-    }
-
     public update() {
         if (this.controls["left"]) { // 'left'
-            this.slideDist += (-0.15);
+            this.slide(-this.DOLLY_RATE);
         }
 
         if (this.controls["up"]) { // 'up'
-            this.dollyDist += (0.15);
+            this.dolly(this.DOLLY_RATE);
         }
 
         if (this.controls["right"]) { // 'right'
-            this.slideDist += (0.15);
+            this.slide(this.SLIDE_RATE);
         }
 
         if (this.controls["down"]) { // 'down'
-            this.dollyDist += (-0.15);
+            this.dolly(-this.SLIDE_RATE);
         }
 
         if (this.controls["rleft"]) { // 'rotate left'
-            this.rotateRad += (0.01);
+            this.rotate(this.ROTATE_RATE);
         }
 
         if (this.controls["rright"]) { // 'rotate right'
-            this.rotateRad += (-0.01);
+            this.rotate(-this.ROTATE_RATE);
         }
-        this.tick();
     }
 
     public control(dir: string, pressed: boolean) {
-        if (dir == 'a') { // 'left'
+        if (dir === 'a') { // 'left'
             this.controls["left"] = pressed;
         }
 
-        if (dir == 'w') { // 'up'
+        if (dir === 'w') { // 'up'
             this.controls["up"] = pressed;
         }
 
-        if (dir == 'd') { // 'right'
+        if (dir === 'd') { // 'right'
             this.controls["right"] = pressed;
         }
 
-        if (dir == 's') { // 'down'
+        if (dir === 's') { // 'down'
             this.controls["down"] = pressed;
         }
 
-        if (dir == 'q') { // 'rotate left'
+        if (dir === 'q') { // 'rotate left'
             this.controls["rleft"] = pressed;
         }
 
-        if (dir == 'e') { // 'rotate right'
+        if (dir === 'e') { // 'rotate right'
             this.controls["rright"] = pressed;
         }
     }
