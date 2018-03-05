@@ -20,6 +20,18 @@ var skyBoxSize = mesh_size(skyBoxMesh);
 var skyTex = cubeTexture(load_image("posx.jpg"), load_image("negx.jpg"), 
 load_image("posy.jpg"), load_image("negy.jpg"), load_image("posz.jpg"), load_image("negz.jpg"));
 
+# phong shading, depends on L, V, N, R, diffuseColor, lightColor
+def phong_shading(L: Float3, V: Float3, N: Float3, Rsq: Float, 
+                  diffuseColor: Float3, lightColor: Float3, p: Float) (
+  var H = normalize(L + V);
+  # calculate diffuse term
+  var Idiff = diffuseColor * max(dot(N, L), 0.0);
+  # calculate specular term
+  var Ispec = vec3(1.0, 1.0, 1.0) * pow(max(dot(N, H), 0.0), p);
+  lightColor * (Idiff + Ispec) / Rsq;
+);
+
+
 
 # Load a texture from an image.
 var tex = texture(load_image("wood1.png"));
@@ -43,13 +55,9 @@ def simple_shader(pos: Float3 Buffer, norm: Float3 Buffer, model: Mat4, uv: Floa
       var lightpos = vec3(viewMatrix * vec4(lightPos, 1.0));
       var vr = lightpos - vec3(vPosition);
       var L = normalize(lightpos - vec3(vPosition)); 
-      var H = normalize(L + V);
-      # calculate diffuse term
-      var Idiff = texture2D(tex, uv) * max(dot(N, L), 0.0);
-      # calculate specular term
-      var Ispec = vec4(1.0, 1.0, 1.0, 0.0) * pow(max(dot(N, H), 0.0), 1.0 / roughness);
-      var finalColor = vec4(lightColor, 0.0) * (Idiff + Ispec) / dot(vr, vr);
-      gl_FragColor = vec4(vec3(finalColor*exposure), 1.0); 
+      var finalC = phong_shading(L,V,N,dot(vr,vr),vec3(texture2D(tex, uv)),
+                                  lightColor, 1.0/roughness);
+      gl_FragColor = vec4(finalC*exposure, 1.0); 
     >
     >;
 );
