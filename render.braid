@@ -1,7 +1,11 @@
-extern rt.projection: Mat4;
-extern rt.viewMatrix: Mat4;
-var projection = rt.projection;
-var viewMatrix = rt.viewMatrix;
+extern camera.update : String -> Void = "rt.camera.updateCam";
+extern camera.getViewMatrix : Mat4 -> Void = "rt.camera.getViewM";
+extern camera.getProjMatrix : Mat4 Float Float -> Void = "rt.camera.getProjM";
+extern camera.simulateControl : Float3 String -> Void = "rt.camera.simCtrl";
+extern control.isOn : String -> Bool = "rt.control.isOn";
+extern control.control_names : String Array = "rt.control.control_names";
+extern rt.drawWidth: Float;
+extern rt.drawHeight: Float;
 
 # Teapot model.
 var t_mesh = load_obj("teapot.obj");
@@ -17,9 +21,17 @@ var skyBoxMesh = load_obj("skyBox.obj");
 var skyBoxPosition = mesh_positions(skyBoxMesh);
 var skyBoxIndices = mesh_indices(skyBoxMesh);
 var skyBoxSize = mesh_size(skyBoxMesh);
-var skyTex = cubeTexture(load_image("posx.jpg"), load_image("negx.jpg"), 
+var skyTex = cubeTexture(load_image("posx.jpg"), load_image("negx.jpg"),
 load_image("posy.jpg"), load_image("negy.jpg"), load_image("posz.jpg"), load_image("negz.jpg"));
-
+var roomSize = 100.0;
+var allWalls = array(
+  make_plane(vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0)),
+  make_plane(vec3(0.0, 0.0, 0.0), vec3(1.0, 0.0, 0.0)),
+  make_plane(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, -1.0)),
+  make_plane(vec3(roomSize, roomSize, -roomSize), vec3(0.0, -1.0, 0.0)),
+  make_plane(vec3(roomSize, roomSize, -roomSize), vec3(-1.0, 0.0, 0.0)),
+  make_plane(vec3(roomSize, roomSize, -roomSize), vec3(0.0, 0.0, 1.0))
+);
 
 # Load a texture from an image.
 var tex = texture(load_image("wood1.png"));
@@ -29,10 +41,12 @@ var NUM_LIGHTS = 1;
 var lightColors = array(vec3(1.0, 0.9, 0.8));
 var lightPositions = array(vec3(20.0, 10.0, -10.0));
 var exposure = 500.0;
+var projection = mat4.create();
+var viewMatrix = mat4.create();
 def simple_shader(pos: Float3 Buffer, norm: Float3 Buffer, model: Mat4, uv: Float2 Buffer, lightPos: Float3, lightColor: Float3) (
     var normalMatrix = mat4();
     mat4.invert(normalMatrix, viewMatrix * model);
-    mat4.transpose(normalMatrix, normalMatrix);    
+    mat4.transpose(normalMatrix, normalMatrix);
     vertex glsl<
     gl_Position = projection * viewMatrix * model * vec4(pos, 1.0);
     fragment glsl<
@@ -42,14 +56,14 @@ def simple_shader(pos: Float3 Buffer, norm: Float3 Buffer, model: Mat4, uv: Floa
       var V = normalize(-vec3(vPosition));
       var lightpos = vec3(viewMatrix * vec4(lightPos, 1.0));
       var vr = lightpos - vec3(vPosition);
-      var L = normalize(lightpos - vec3(vPosition)); 
+      var L = normalize(lightpos - vec3(vPosition));
       var H = normalize(L + V);
       # calculate diffuse term
       var Idiff = texture2D(tex, uv) * max(dot(N, L), 0.0);
       # calculate specular term
       var Ispec = vec4(1.0, 1.0, 1.0, 0.0) * pow(max(dot(N, H), 0.0), 1.0 / roughness);
       var finalColor = vec4(lightColor, 0.0) * (Idiff + Ispec) / dot(vr, vr);
-      gl_FragColor = vec4(vec3(finalColor*exposure), 1.0); 
+      gl_FragColor = vec4(vec3(finalColor*exposure), 1.0);
     >
     >;
 );
@@ -59,19 +73,77 @@ def skybox_shader(pos: Float3 Buffer, model: Mat4) (
     vertex glsl<
         gl_Position = projection * viewMatrix * model * vec4(pos, 1.0);
         fragment glsl<
-          var eye = vec3(mvInv * vec4(0.0, 0.0, 0.0, 1.0));
+          var weye = vec3(mvInv * vec4(0.0, 0.0, 0.0, 1.0));
           # Change vector from right-hand coordinate system to left-hand coordinate system, which is a webgl convention
-          gl_FragColor = textureCube(skyTex, (pos - eye) * vec3(-1.0, 1.0, 1.0));
+          gl_FragColor = textureCube(skyTex, (pos-weye) * vec3(-1.0, 1.0, 1.0));
         >
     >;
 );
 
 var t_model = mat4.create();
 mat4.scale(t_model, t_model, vec3(0.1, 0.1, 0.1));
+mat4.translate(t_model, t_model, vec3(50.0, 20.0, -50.0));
+var room_model = mat4.create();
+mat4.scale(room_model, room_model, vec3(0.5, 0.5, 0.5));
+mat4.translate(room_model, room_model, vec3(100.0, 100.0, -100.0));
+
+# so that else branch does something
+def void_fun (x: Float) (
+  x = x;
+);
+
+def wall_collision_detection (obj: GameObj) (
+  var i = 0;
+  var bound = 5;
+  var result = false;
+  while(i <= bound) (
+    var wall = get(allWalls, i);
+    if(check_collision_geom(obj, wall)) (
+      result = true; # would be nice to have boolean ops
+    ) (
+      result = result;
+    );
+    i = i + 1;
+  );
+  result;
+);
+
+var wall_collision_resolution = fun -> (
+  # simple wall detection and resolution: stop when collide
+  # simulate each control and apply the ones that does not lead to collision
+  var control_len = 5;
+  var i = 0;
+  # would be a nice use of for loops
+  while(i <= control_len) (
+    var ctrl_name = get(control.control_names, i);
+    if(control.isOn(ctrl_name)) (
+      var sim = vec3(0.0, 0.0, 0.0);
+      camera.simulateControl(sim, ctrl_name);
+      var simobj = make_object(sim, bot_collision_radius);
+      if(~wall_collision_detection(simobj)) (
+        camera.update(ctrl_name);
+      ) (
+        camera.update("n");
+      );
+    ) (
+      camera.update("");
+    );
+    i = i + 1;
+  );
+);
+
+var update_state = fun -> (
+  # update
+  wall_collision_resolution();
+  camera.getViewMatrix(viewMatrix);
+  camera.getProjMatrix(projection, rt.drawWidth, rt.drawHeight);
+);
+
 render js<
+  update_state();
+  #draw
   simple_shader(t_position, t_normal, t_model, texcoord, get(lightPositions, 0), get(lightColors,0));
   draw_mesh(t_indices, t_size);
-  skybox_shader(skyBoxPosition, mat4.create());
+  skybox_shader(skyBoxPosition, room_model);
   draw_mesh(skyBoxIndices, skyBoxSize);
 >
-

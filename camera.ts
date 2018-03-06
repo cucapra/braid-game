@@ -103,29 +103,41 @@ export class PerspCamera {
         vec3.transformMat4(targetV, targetV, rot);
         vec3.add(this.target, targetV, this.eye);
     }
+    
+    public simulateControl(sim: vec3, ctrl: string) {
+      let eyeCopy = vec3.clone(this.eye);
+      let tCopy = vec3.clone(this.target);
+      this.update(ctrl);
+      vec3.copy(sim, this.eye);
+      vec3.copy(this.eye, eyeCopy);
+      vec3.copy(this.target, tCopy);
+    }
 
-    public update() {
-        if (this.controls["left"]) { // 'left'
+    public update(ctrl: string) {
+      if (ctrl != ""){  
+        console.log(ctrl);
+      }
+        if (ctrl == "left") { // 'left'
             this.slide(-this.DOLLY_RATE);
         }
 
-        if (this.controls["up"]) { // 'up'
+        if (ctrl == "up") { // 'up'
             this.dolly(this.DOLLY_RATE);
         }
 
-        if (this.controls["right"]) { // 'right'
+        if (ctrl == "right") { // 'right'
             this.slide(this.SLIDE_RATE);
         }
 
-        if (this.controls["down"]) { // 'down'
+        if (ctrl == "down") { // 'down'
             this.dolly(-this.SLIDE_RATE);
         }
 
-        if (this.controls["rleft"]) { // 'rotate left'
+        if (ctrl == "rleft") { // 'rotate left'
             this.rotate(this.ROTATE_RATE);
         }
 
-        if (this.controls["rright"]) { // 'rotate right'
+        if (ctrl == "rright") { // 'rotate right'
             this.rotate(-this.ROTATE_RATE);
         }
     }
@@ -154,5 +166,21 @@ export class PerspCamera {
         if (dir === 'e') { // 'rotate right'
             this.controls["rright"] = pressed;
         }
+    }
+    // Needed to make interop work.
+    updateCam = (ctrl: string) => {
+      return this.update(ctrl);
+    }
+
+    getViewM = (out: mat4) => {
+      return this.getViewMatrix(out)
+    }
+
+    getProjM = (out: mat4, width: number, height: number) => {
+      return this.getProjMatrix(out, width, height)
+    }
+    
+    simCtrl = (sim: vec3, ctrl: string) => {
+      this.simulateControl(sim, ctrl);
     }
 }

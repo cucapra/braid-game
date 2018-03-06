@@ -3,15 +3,17 @@ import { Assets, load_asset } from 'braid-glrt';
 import braid_func from './render';
 import { mat4, vec3 } from 'gl-matrix';
 import { PerspCamera } from './camera';
+import { Control } from './control';
 
 function getCamera() {
-    let eye = vec3.fromValues(20, 5, -10);
-    let target = vec3.fromValues(0, 0, 0);
+    let eye = vec3.fromValues(20, 15, -10);
+    let target = vec3.fromValues(0, 15, 0);
     let up = vec3.fromValues(0, 1, 0);
     let camera = new PerspCamera(eye, target, up, 0.01, 1000);
     return camera;
 }
 let camera = getCamera();
+let control = new Control();
 
 function example(canvas: HTMLCanvasElement, assets: Assets) {
   // Get the WebGL context.
@@ -21,11 +23,8 @@ function example(canvas: HTMLCanvasElement, assets: Assets) {
   // Load a Braid runtime object.
   let rt = glrt(gl, assets, (n) => {});
 
-  // A projection matrix.
-  let projection = mat4.create();
-  (rt as any).projection = projection;
-  let view = mat4.create();
-  (rt as any).viewMatrix = view;
+  (rt as any).camera = camera;
+  (rt as any).control = control;
   // Get the compiled Braid code's render function.
   let braid_render = braid_func(rt);
   // The main render loop.
@@ -34,10 +33,8 @@ function example(canvas: HTMLCanvasElement, assets: Assets) {
     let width = gl.drawingBufferWidth;
     let height = gl.drawingBufferHeight;
     gl.viewport(0, 0, width, height);
-    camera.update();
-    camera.getViewMatrix(view);
-    camera.getProjMatrix(projection, width, height);
-    // Rendering flags.
+    (rt as any).drawWidth = width;
+    (rt as any).drawHeight = height;
     gl.depthFunc(gl.LESS);
     gl.enable(gl.DEPTH_TEST);
 
@@ -67,9 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.onkeydown = (e) => {
-  camera.control(e.key, true);
+  control.update(e.key, true);
 };
 
 window.onkeyup = (e) => {
-  camera.control(e.key, false);
+  control.update(e.key, false);
 };

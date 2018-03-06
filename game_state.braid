@@ -1,0 +1,42 @@
+type GameObj = Float3 * Float; # a spherical bounding box
+type Plane = Float3 * Float3; # origin and normal, normal points *inside*
+
+############################ obj ############################
+
+def make_object (pos: Float3, radius: Float) (
+	pos, radius;
+);
+
+def get_obj_pos (obj: GameObj) (
+	(obj).0;
+);
+
+def get_obj_radius (obj: GameObj) (
+	(obj).1;
+);
+
+def check_collision(o1: GameObj, o2: GameObj) (
+	var dist = get_obj_pos(o1) - get_obj_pos(o2);
+	dot(dist, dist) <= (get_obj_radius(o1) + get_obj_radius(o2));
+);
+
+############################ plane ###########################
+def make_plane (o: Float3, n: Float3) (
+	o, normalize(n);
+);
+
+def get_plane_origin (obj: Plane) (
+	(obj).0;
+);
+
+def get_plane_normal (obj: Plane) (
+	(obj).1;
+);
+
+# normal vector of plane is unit vector
+def check_collision_geom(o: GameObj, p: Plane) (
+	var dist = dot(get_obj_pos(o)-get_plane_origin(p), get_plane_normal(p));
+	dist <= get_obj_radius(o);
+);
+
+var bot_collision_radius = 5.0; # collider size of the robot itself.

@@ -6,7 +6,7 @@ example.bundle.js: build/example.js
 	yarn run webpack
 
 render.js: render.braid
-	cat ../braid/glrt/preamble.braid $^ | braid -cmw > $@
+	cat ../braid/glrt/preamble.braid game_state.braid $^ | braid -cmw > $@
 
 build/example.js: $(wildcard *.ts) render.js
 	yarn run tsc
