@@ -68,8 +68,8 @@ export class PerspCamera {
         vec3.sub(out, this.target, this.eye);
         vec3.normalize(out, out);
     }
-    //get direction in the look direction but
-    //perpendicular to the up vector
+    // get direction in the look direction but
+    // perpendicular to the up vector
     private getMoveAt(out: vec3) {
         this.getLookAt(out);
         vec3.scaleAndAdd(out, out, this.up, -vec3.dot(out, this.up));
@@ -103,7 +103,7 @@ export class PerspCamera {
         vec3.transformMat4(targetV, targetV, rot);
         vec3.add(this.target, targetV, this.eye);
     }
-    
+
     public simulateControl(sim: vec3, ctrl: string) {
       let eyeCopy = vec3.clone(this.eye);
       let tCopy = vec3.clone(this.target);
@@ -114,30 +114,30 @@ export class PerspCamera {
     }
 
     public update(ctrl: string) {
-      if (ctrl != ""){  
+      if (ctrl !== "") {
         console.log(ctrl);
       }
-        if (ctrl == "left") { // 'left'
+        if (ctrl === "left") { // 'left'
             this.slide(-this.DOLLY_RATE);
         }
 
-        if (ctrl == "up") { // 'up'
+        if (ctrl === "up") { // 'up'
             this.dolly(this.DOLLY_RATE);
         }
 
-        if (ctrl == "right") { // 'right'
+        if (ctrl === "right") { // 'right'
             this.slide(this.SLIDE_RATE);
         }
 
-        if (ctrl == "down") { // 'down'
+        if (ctrl === "down") { // 'down'
             this.dolly(-this.SLIDE_RATE);
         }
 
-        if (ctrl == "rleft") { // 'rotate left'
+        if (ctrl === "rleft") { // 'rotate left'
             this.rotate(this.ROTATE_RATE);
         }
 
-        if (ctrl == "rright") { // 'rotate right'
+        if (ctrl === "rright") { // 'rotate right'
             this.rotate(-this.ROTATE_RATE);
         }
     }
@@ -173,13 +173,13 @@ export class PerspCamera {
     }
 
     getViewM = (out: mat4) => {
-      return this.getViewMatrix(out)
+      return this.getViewMatrix(out);
     }
 
     getProjM = (out: mat4, width: number, height: number) => {
-      return this.getProjMatrix(out, width, height)
+      return this.getProjMatrix(out, width, height);
     }
-    
+
     simCtrl = (sim: vec3, ctrl: string) => {
       this.simulateControl(sim, ctrl);
     }
