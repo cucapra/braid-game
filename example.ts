@@ -59,7 +59,7 @@ function load_assets_and_run(canvas: HTMLCanvasElement, to_load: Array<string>) 
 document.addEventListener("DOMContentLoaded", () => {
   let canvas = document.getElementsByTagName("canvas")[0];
   console.log("done loading");
-  load_assets_and_run(canvas, ["teapot.obj", "wood1.png", "skyBox.obj", "posx.jpg", "posx.jpg", "negx.jpg", "posy.jpg",
+  load_assets_and_run(canvas, ["teapot.obj", "wood1.png", "skyBox.obj", "wall.obj", "posx.jpg", "posx.jpg", "negx.jpg", "posy.jpg",
   "negy.jpg", "posz.jpg", "negz.jpg"]);
 });
 

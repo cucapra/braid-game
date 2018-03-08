@@ -4,6 +4,8 @@ extern camera.getProjMatrix : Mat4 Float Float -> Void = "rt.camera.getProjM";
 extern camera.simulateControl : Float3 String -> Void = "rt.camera.simCtrl";
 extern control.isOn : String -> Bool = "rt.control.isOn";
 extern control.control_names : String Array = "rt.control.control_names";
+extern print : Float4 -> Void = "console.log";
+extern vec4.transformMat4 : Float4 Float4 Mat4 -> Void;
 extern rt.drawWidth: Float;
 extern rt.drawHeight: Float;
 
@@ -24,22 +26,25 @@ var skyBoxSize = mesh_size(skyBoxMesh);
 var skyTex = cubeTexture(load_image("posx.jpg"), load_image("negx.jpg"),
 load_image("posy.jpg"), load_image("negy.jpg"), load_image("posz.jpg"), load_image("negz.jpg"));
 var roomSize = 100.0;
-var allWalls = array(
-  make_plane(vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0)),
-  make_plane(vec3(0.0, 0.0, 0.0), vec3(1.0, 0.0, 0.0)),
-  make_plane(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, -1.0)),
-  make_plane(vec3(roomSize, roomSize, -roomSize), vec3(0.0, -1.0, 0.0)),
-  make_plane(vec3(roomSize, roomSize, -roomSize), vec3(-1.0, 0.0, 0.0)),
-  make_plane(vec3(roomSize, roomSize, -roomSize), vec3(0.0, 0.0, 1.0))
-);
 
 # Load a texture from an image.
 var tex = texture(load_image("wood1.png"));
+
+# Load a room
+var wallMesh = load_obj("wall.obj");
+var wallPosition = mesh_positions(wallMesh);
+var wallNormal = mesh_normals(wallMesh);
+var wallTexcoord = mesh_texcoords(wallMesh);
+var wallIndices = mesh_indices(wallMesh);
+var wallSize = mesh_size(wallMesh);
+var wallTex = tex;
+
+
 # The parameters for the Phong shader.
 var roughness = 0.1;
 var NUM_LIGHTS = 1;
 var lightColors = array(vec3(1.0, 0.9, 0.8));
-var lightPositions = array(vec3(20.0, 10.0, -10.0));
+var lightPositions = array(vec3(20.0, 10.0, -10.0), vec3(50.0, 10.0, -50.0));
 var exposure = 500.0;
 var projection = mat4.create();
 var viewMatrix = mat4.create();
@@ -83,9 +88,26 @@ def skybox_shader(pos: Float3 Buffer, model: Mat4) (
 var t_model = mat4.create();
 mat4.scale(t_model, t_model, vec3(0.1, 0.1, 0.1));
 mat4.translate(t_model, t_model, vec3(50.0, 20.0, -50.0));
+
 var room_model = mat4.create();
 mat4.scale(room_model, room_model, vec3(0.5, 0.5, 0.5));
 mat4.translate(room_model, room_model, vec3(100.0, 100.0, -100.0));
+
+var wall_model = mat4.create();
+mat4.scale(wall_model, wall_model, vec3(10, 10, 10));
+mat4.translate(wall_model, wall_model, vec3(2, 1, -2));
+
+print(wall_model * vec4(0, 0, 0, 1));
+
+var allWalls = array(
+  make_plane(vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0)),
+  make_plane(vec3(0.0, 0.0, 0.0), vec3(1.0, 0.0, 0.0)),
+  make_plane(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, -1.0)),
+  make_plane(vec3(roomSize, roomSize, -roomSize), vec3(0.0, -1.0, 0.0)),
+  make_plane(vec3(roomSize, roomSize, -roomSize), vec3(-1.0, 0.0, 0.0)),
+  make_plane(vec3(roomSize, roomSize, -roomSize), vec3(0.0, 0.0, 1.0)),
+  plane_from_trans(wall_model)
+);
 
 # so that else branch does something
 def void_fun (x: Float) (
@@ -94,7 +116,7 @@ def void_fun (x: Float) (
 
 def wall_collision_detection (obj: GameObj) (
   var i = 0;
-  var bound = 5;
+  var bound = 6;
   var result = false;
   while(i <= bound) (
     var wall = get(allWalls, i);
@@ -142,6 +164,8 @@ var update_state = fun -> (
 render js<
   update_state();
   #draw
+  simple_shader(wallPosition, wallNormal, wall_model, wallTexcoord, get(lightPositions, 1), get(lightColors, 0));
+  draw_mesh(wallIndices, wallSize);
   simple_shader(t_position, t_normal, t_model, texcoord, get(lightPositions, 0), get(lightColors,0));
   draw_mesh(t_indices, t_size);
   skybox_shader(skyBoxPosition, room_model);
