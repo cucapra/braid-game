@@ -105,8 +105,8 @@ var allWalls = array(
   make_plane(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, -1.0)),
   make_plane(vec3(roomSize, roomSize, -roomSize), vec3(0.0, -1.0, 0.0)),
   make_plane(vec3(roomSize, roomSize, -roomSize), vec3(-1.0, 0.0, 0.0)),
-  make_plane(vec3(roomSize, roomSize, -roomSize), vec3(0.0, 0.0, 1.0)),
-  plane_from_trans(wall_model)
+  make_plane(vec3(roomSize, roomSize, -roomSize), vec3(0.0, 0.0, 1.0))
+  #plane_from_trans(wall_model)
 );
 
 # so that else branch does something
@@ -116,7 +116,7 @@ def void_fun (x: Float) (
 
 def wall_collision_detection (obj: GameObj) (
   var i = 0;
-  var bound = 6;
+  var bound = 5;
   var result = false;
   while(i <= bound) (
     var wall = get(allWalls, i);
@@ -143,8 +143,10 @@ var wall_collision_resolution = fun -> (
       camera.simulateControl(sim, ctrl_name);
       var simobj = make_object(sim, bot_collision_radius);
       if(~wall_collision_detection(simobj)) (
+        print (vec4(1.0,1.0,1.0,1.0));
         camera.update(ctrl_name);
       ) (
+        print (vec4(0.0,1.0,1.0,1.0));
         camera.update("n");
       );
     ) (

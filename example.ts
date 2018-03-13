@@ -7,7 +7,7 @@ import { Control } from './control';
 
 function getCamera() {
     let eye = vec3.fromValues(20, 15, -10);
-    let target = vec3.fromValues(0, 15, 0);
+    let target = vec3.fromValues(10, 15, -20);
     let up = vec3.fromValues(0, 1, 0);
     let camera = new PerspCamera(eye, target, up, 0.01, 1000);
     return camera;

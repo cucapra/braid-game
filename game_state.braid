@@ -27,7 +27,7 @@ def make_plane (o: Float3, n: Float3) (
 
 def plane_from_trans (m: Mat4) (
 	var o = vec3((m * vec4(0, 0, 0, 1)));
-	var n = normalize(vec3((m * vec4(0, 0, 1, 0))));
+	var n = normalize(vec3((m * vec4(0, 0, -1, 0))));
 	make_plane(o, n);
 );
 
@@ -42,7 +42,7 @@ def get_plane_normal (obj: Plane) (
 # normal vector of plane is unit vector
 def check_collision_geom(o: GameObj, p: Plane) (
 	var dist = dot(get_obj_pos(o)-get_plane_origin(p), get_plane_normal(p));
-	dist <= get_obj_radius(o);
+	(dist*dist) <= (get_obj_radius(o)*get_obj_radius(o));
 );
 
 var bot_collision_radius = 5.0; # collider size of the robot itself.
