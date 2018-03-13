@@ -25,6 +25,12 @@ def make_plane (o: Float3, n: Float3) (
 	o, normalize(n);
 );
 
+def plane_from_trans (m: Mat4) (
+	var o = vec3((m * vec4(0, 0, 0, 1)));
+	var n = normalize(vec3((m * vec4(0, 0, 1, 0))));
+	make_plane(o, n);
+);
+
 def get_plane_origin (obj: Plane) (
 	(obj).0;
 );
