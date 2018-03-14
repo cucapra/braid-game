@@ -5,6 +5,7 @@ import { mat4, vec3 } from 'gl-matrix';
 import { PerspCamera } from './camera';
 import { Control } from './control';
 import { SceneLight, get_light_intensity, get_light_position } from './game_data';
+import * as data_loader from "./game_data_loader";
 
 function getCamera() {
     let eye = vec3.fromValues(20, 15, -10);
@@ -17,6 +18,9 @@ let camera = getCamera();
 let control = new Control();
 
 function example(canvas: HTMLCanvasElement, assets: Assets) {
+  let gameDef = data_loader.get_game_data("test.json");
+  console.log(gameDef);
+  
   // Get the WebGL context.
   let gl = (canvas.getContext("webgl") ||
     canvas.getContext("experimental-webgl")) as WebGLRenderingContext;

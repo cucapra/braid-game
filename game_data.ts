@@ -30,7 +30,7 @@ export type TriggerAction = "RoomSwitch" | "InventoryAdd" | "InventoryDrop";
 export interface Trigger {
   interaction: InteractionType;
   action: TriggerAction;
-  target?: SceneObject;
+  target?: string;
 }
 
 export function get_trigger_interaction(trigger: Trigger) {
@@ -55,9 +55,11 @@ export function get_trigger_target(trigger: Trigger) {
   throw "this trigger has no target";
 }
 
+export type ColliderType = "sphere" | "plane";
+
 // need to support more colliders
 export interface Collider {
-  name: string;
+  name: ColliderType;
 }
 
 export interface PlaneCollider extends Collider{
@@ -118,13 +120,18 @@ export function get_render_obj_shader_name(obj: RenderObject) {
 }
 
 export interface SceneObject {
+  id: string;
   position: vec3; //basically a global translation
   localTransform: mat4;
   render_obj: RenderObject;
   collider? : Collider;
   collider_transform?: mat4; //if not present, use localTransform
   triggers: Array<Trigger>;
-  light?: SceneLight; //optional light from the scene object
+  light?: SceneLight; //optional light with position relative from the scene object
+}
+
+export function get_scene_obj_id (obj: SceneObject) {
+  return obj.id;
 }
 
 export function get_scene_obj_position (obj: SceneObject) {
