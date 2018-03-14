@@ -49,7 +49,7 @@ export function has_trigger_target(trigger: Trigger) {
 }
 
 export function get_trigger_target(trigger: Trigger) {
-  if (trigeer.target) {
+  if (trigger.target) {
       return trigger.target;
   }
   throw "this trigger has no target";
@@ -60,7 +60,7 @@ export interface Collider {
   name: string;
 }
 
-export interface PlaneCollider {
+export interface PlaneCollider extends Collider{
   height: number;
   width: number;
   thickness: number; //plane is actually a 3d collider
@@ -72,7 +72,8 @@ export function get_collider_name(collider: Collider) {
 
 export function get_plane_dimension(plane: Collider) {
   if ((<PlaneCollider>plane).height) {
-    return vec3(plane.width, plane.height, plane.thickness);
+    return vec3.fromValues((<PlaneCollider>plane).width, (<PlaneCollider>plane).height,
+      (<PlaneCollider>plane).thickness);
   }
   throw "cannot get plane dimension from sphere";
 }
@@ -83,7 +84,7 @@ export interface SphereCollider extends Collider {
 
 export function get_sphere_radius(sphere: Collider) {
   if ((<SphereCollider>sphere).radius) {
-    return sphere.radius;
+    return (<SphereCollider>sphere).radius;
   }
   throw "cannot get radius from plane";
 }
@@ -138,16 +139,32 @@ export function get_scene_obj_render_obj (obj: SceneObject) {
   return obj.render_obj;
 }
 
+export function has_scene_obj_collider (obj: SceneObject) {
+  if (obj.collider) {
+    return true;
+  }
+  return false;
+}
+
 export function get_scene_obj_collider (obj: SceneObject) {
   if (obj.collider) {
     return obj.collider;
   }
+  throw "scene object does not have a collider";
+}
+
+export function has_scene_obj_collider_transform (obj: SceneObject) {
+  if (obj.collider_transform){
+    return true;
+  }
+  return false;
 }
 
 export function get_scene_obj_collider_transform (obj: SceneObject) {
   if (obj.collider_transform){
     return obj.collider_transform;
   }
+  throw "scene object does not have a collider transform";
 }
 
 export function get_scene_obj_triggers (obj: SceneObject) {
@@ -165,16 +182,24 @@ export function iter_scene_obj_trigger (obj: SceneObject, f:(arg: Trigger)=> any
   return get_scene_obj_triggers(obj).map(f);
 }
 
+export function has_scene_obj_light (obj: SceneObject) {
+  if (obj.light) {
+    return true;
+  }
+  return false;
+}
+
 export function get_scene_obj_light (obj: SceneObject) {
   if (obj.light) {
     return obj.light;
   }
+  throw "scene object does not have a light";
 }
 
 // lights and objects are defined with respect to room origin
 export interface RoomDefinition {
   lights: Array<SceneLight>;
-  objects?: Array<SceneObject>;
+  objects: Array<SceneObject>;
 }
 
 export interface GameDefinition {
@@ -182,7 +207,7 @@ export interface GameDefinition {
 }
 
 export function get_rooms(gameDef: GameDefinition) {
-  return room.rooms;
+  return gameDef.rooms;
 }
 
 export function get_room(gameDef: GameDefinition, index: number) {

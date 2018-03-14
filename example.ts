@@ -4,6 +4,7 @@ import braid_func from './render';
 import { mat4, vec3 } from 'gl-matrix';
 import { PerspCamera } from './camera';
 import { Control } from './control';
+import { SceneLight, get_light_intensity, get_light_position } from './game_data';
 
 function getCamera() {
     let eye = vec3.fromValues(20, 15, -10);
