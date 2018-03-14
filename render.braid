@@ -4,10 +4,12 @@ extern camera.getProjMatrix : Mat4 Float Float -> Void = "rt.camera.getProjM";
 extern camera.simulateControl : Float3 String -> Void = "rt.camera.simCtrl";
 extern control.isOn : String -> Bool = "rt.control.isOn";
 extern control.control_names : String Array = "rt.control.control_names";
-extern print : Float4 -> Void = "console.log";
+extern print : Any -> Void = "console.log";
 extern vec4.transformMat4 : Float4 Float4 Mat4 -> Void;
 extern rt.drawWidth: Float;
 extern rt.drawHeight: Float;
+
+print(get_light_positions(0));
 
 # Teapot model.
 var t_mesh = load_obj("teapot.obj");
@@ -86,7 +88,7 @@ def skybox_shader(pos: Float3 Buffer, model: Mat4) (
 );
 
 var t_model = mat4.create();
-mat4.scale(t_model, t_model, vec3(0.1, 0.1, 0.1));
+mat4.scale(t_model, t_model, vec3(0.5, 0.5, 0.5));
 mat4.translate(t_model, t_model, vec3(50.0, 20.0, -50.0));
 
 var room_model = mat4.create();

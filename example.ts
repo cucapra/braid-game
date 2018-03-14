@@ -6,6 +6,7 @@ import { PerspCamera } from './camera';
 import { Control } from './control';
 import { SceneLight, get_light_intensity, get_light_position } from './game_data';
 import * as data_loader from "./game_data_loader";
+import * as data_runtime from "./game_data";
 
 function getCamera() {
     let eye = vec3.fromValues(20, 15, -10);
@@ -19,8 +20,7 @@ let control = new Control();
 
 function example(canvas: HTMLCanvasElement, assets: Assets) {
   let gameDef = data_loader.get_game_data("test.json");
-  console.log(gameDef);
-  
+  let gdrt = data_runtime.data_rt(gameDef);
   // Get the WebGL context.
   let gl = (canvas.getContext("webgl") ||
     canvas.getContext("experimental-webgl")) as WebGLRenderingContext;
@@ -30,6 +30,7 @@ function example(canvas: HTMLCanvasElement, assets: Assets) {
 
   (rt as any).camera = camera;
   (rt as any).control = control;
+  (rt as any).gdrt = gdrt;
   // Get the compiled Braid code's render function.
   let braid_render = braid_func(rt);
   // The main render loop.

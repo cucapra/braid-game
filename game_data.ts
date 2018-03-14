@@ -260,3 +260,13 @@ export function get_object(room: RoomDefinition, index: number) {
 export function iter_objects(room: RoomDefinition, f:(obj: SceneObject)=> any) {
   return get_objects(room).map(f);
 }
+
+export function data_rt(gd: GameDefinition) {
+  //due to braid limitations, all arg and return types need to be primitives
+  return {
+    get_light_positions(roomId: number) {
+      let room = get_room(gd, roomId);
+      return iter_lights(room, get_light_position);
+    }
+  };
+}
