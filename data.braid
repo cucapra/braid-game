@@ -1,0 +1,45 @@
+type Collider = String * Float2 # TODO: how to define isCollision function here
+type Transform = Mat4 * Mat4 * Mat4 * Mat4 * Mat4 # Translation * Rx * Ry * Rx * Scale
+type Shader = String
+type RenderObject = Mesh * Texture * Shader
+type Light = Vec3 * Vec3 * Float # Color * Position * Intensity
+type Trigger = ( -> Bool) * ()
+type Object = Vec3 * Transform * RenderObject * Collider * Transform * Light * (Trigger Array)
+type Inventory = String
+type Player = Int * Collider * (Inventory Array) * Float * RenderObject * Transform
+# Room = Lights * Objects * size * texture * start_position * start_direction
+type Room = (Light Array) * (Object Array) * Vec3 * Texture * Vec2 * Vec3
+type Game = Int * (Room Array) * (Player)
+
+var game: Game = (1, )
+
+def simple_shader(pos: Float3 Buffer, norm: Float3 Buffer, model: Mat4, uv: Float2 Buffer, lightPos: Float3, lightColor: Float3, shader: Shader) (
+    if (shader == "phong") (
+
+    ) (
+    )
+)
+
+def 
+
+def data_get_room_1_shader() (
+
+)
+
+def data_get_starting_room() (
+    return 1
+)
+
+var data_room_teapot = fun (field: String, ) -> (
+
+)
+
+var __data_current_room = data_get_starting_room()
+
+def data_get_player_current_room() (
+    return __data_current_room
+)
+
+def data_set_player_current_room(r: Int) (
+    __data_current_room = r
+)
