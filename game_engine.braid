@@ -1,0 +1,78 @@
+extern camera.update : String -> Void = "rt.camera.updateCam";
+extern camera.getViewMatrix : Mat4 -> Void = "rt.camera.getViewM";
+extern camera.getProjMatrix : Mat4 Float Float -> Void = "rt.camera.getProjM";
+extern camera.simulateControl : Float3 String -> Void = "rt.camera.simCtrl";
+extern control.isOn : String -> Bool = "rt.control.isOn";
+extern control.control_names : String Array = "rt.control.control_names";
+extern print : Any -> Void = "console.log";
+extern vec4.transformMat4 : Float4 Float4 Mat4 -> Void;
+extern rt.drawWidth: Float;
+extern rt.drawHeight: Float;
+extern get_player_cmds: -> (String Array) = "rt.control.get_cmds";
+
+
+
+def update() (
+  resolve_player_action();
+  resolve_interaction();
+);
+
+def resolve_player_action() (
+  var cmd = get_player_cmds();
+  var simulation_record = simulate_player_cmd(cmd);
+  simulation_record;
+);
+
+# return whether move is successful and what is the new player position
+def simulate_player_move(cmd: String) : Bool*Vec3 (
+
+)
+
+# return whether a trigger is activated and what the trigger is
+# multiple triggers can happen during one command.
+def simulate_trigger(cmd: String) : Bool*(Trigger Array) (
+
+)
+
+
+def simulate_player_cmds(cmds: String Array) (
+  var array_len = length();
+  var i = 0;
+  var effective_cmds = array("");
+  var effective_triggers = array("");
+  while (i < array_len) (
+    var cmd = get(cmds, i);
+    var move_record = simulate_player_move(cmd);
+    if ((move_record).0) (
+      push(effective_cmds, cmd);0
+    ) (0);
+    var game_copy = get_game();
+    set_player_position((move_record).1) #TODO, actually should update player
+    var trigger_record = simulate_trigger(cmd);
+    if ((trigger_record).0) (
+      var triggers_activated = (trigger_record).1;
+      var res_length = length(triggers_activated);
+      var j = 0;
+      while (j < res_length) (
+        push(effective_triggers, triggers_activated.get(j));
+        j = j+1;
+      );0
+    ) (0);
+    i = i + 1;
+  );
+  effective_cmds, effective_triggers;
+);
+
+def resolve_interaction(simulation_record: (String Array) * (Trigger Array)) (
+  resolve_movement((simulation_record).0);
+  resolve_trigger((simulation_record).1);
+);
+
+
+def resolve_movement() (
+
+);
+
+def resolve_trigger() (
+
+);
