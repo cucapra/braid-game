@@ -14,6 +14,6 @@
     "@types/jquery": "^3.3.0",
     "typescript": "^2.7.1",
     "webpack": "^3.10.0",
-    "braid-lang": "latest"    
+    "braid-lang": "latest"
   }
 }
