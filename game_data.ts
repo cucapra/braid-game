@@ -267,6 +267,10 @@ export function data_rt(gd: GameDefinition) {
     get_light_positions(roomId: number) {
       let room = get_room(gd, roomId);
       return iter_lights(room, get_light_position);
+    },
+    get_light_intensities(roomId: number) {
+      let room = get_room(gd, roomId);
+      return iter_lights(room, get_light_intensity);
     }
   };
 }

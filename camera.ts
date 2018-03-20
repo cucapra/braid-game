@@ -180,4 +180,8 @@ export class PerspCamera {
     simCtrl = (sim: vec3, ctrl: string) => {
         this.simulateControl(sim, ctrl);
     }
+    
+    getEyePos = () => {
+        this.getEye();
+    }
 }

@@ -4,12 +4,13 @@
       "lights": [
           {
             "color":[1.0,0.8,0.6],
-            "position":[25.0,48.0,-25.0]
+            "position":[25.0,48.0,-25.0],
+            "intensity":
           }
       ],
-      "objects": [
+      "objects": {
+          "teapot" :
           {
-          "id": "teapot",
           "position": [12.0,15.0,-15.0],
           "localTransformT": [0.0,0.0,0.0],
           "localTransformRx": 0.0,
@@ -29,7 +30,7 @@
           "colliderRx": 0.0,
           "colliderRy": 1.4,
           "colliderRz": 0.0,
-          "colliderS": [1.5,1.5,1.5],
+          "colliderS": 1.5,
           "triggers": [
             {
               "interaction": "Touch",
@@ -42,7 +43,7 @@
             "position": [0.0,0.0,0.0]
           }
         }
-      ]
+      }
     }
   ]
 }
