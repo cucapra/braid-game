@@ -14,9 +14,14 @@ type Room = String * ((Light Array) * ((Object Array) * (Vec3 * (Texture * (Vec2
 type Game = String * ((Room Array) * Player)
 
 var __game: Game = (1, )
+var __cur_room = (__game).0;
 
 var get_starting_room = fun -> (
     (__game).0
+);
+
+var get_current_room = fun -> (
+    __cur_room;
 );
 
 var get_rooms = fun -> (
@@ -38,7 +43,7 @@ var get_room = fun (name: String) -> (
     room_picked; # TODO: Does not have null or option
 )
 
-var get_light = fun (room: Room, index: Int) -> (
+var get_room_light = fun (room: Room, index: Int) -> (
     var lights = ((room).1).0;
     get(lights, i);
 );
@@ -55,11 +60,11 @@ var get_light_intensity = fun (light: Light) -> (
     ((light).1).1;
 );
 
-var get_objects = fun (room: Room) -> (
+var get_room_objects = fun (room: Room) -> (
     (((room).1).1).0;
 );
 
-var get_object = fun (room: Room, name: String) -> (
+var get_room_object = fun (room: Room, name: String) -> (
     var objects = get_objects();
     var i = 0;
     var object_picked = get(objects, i);
@@ -120,4 +125,94 @@ var get_transform_scale = fun (transform: Transform) -> (
     ((((transform).1).1).1).1;
 );
 
-# var get_renderObject_
+var get_collider_name = fun (collider: Collider) -> (
+    (collider).0;
+);
+
+var get_collider_dimension = fun (collider: Collider) -> (
+    ((collider).1).0;
+);
+
+var get_collider_transform = fun (collider: Collider) -> (
+    ((collider).1).1;
+);
+
+var get_render_object_mesh = fun (render_obj: RenderObject) -> (
+    (render_obj).0;
+);
+
+var get_render_object_texture = fun (render_obj: RenderObject) -> (
+    ((render_obj).1).0;
+);
+
+var get_render_object_shader = fun (render_obj: RenderObject) -> (
+    ((render_obj).1).1;
+);
+
+var get_trigger_name = fun (trigger: Trigger) -> (
+    (trigger).0;
+);
+
+var get_trigger_condition = fun (trigger: Trigger) -> (
+    ((trigger).0).0;
+);
+
+var get_trigger_action = fun (trigger: Trigger) -> (
+    ((trigger).0).1;
+);
+
+var get_player = fun (game: Game) -> (
+    ((game).1).1;
+);
+
+#type Player = Int * Collider * (Inventory Array) * Float * RenderObject * Transform
+var get_player_room = fun (player : Player) -> (
+    (player).0;
+);
+
+var get_player_collider = fun (player : Player) -> (
+    ((player).1).0;
+);
+
+var get_player_inventory = fun (player : Player) -> (
+    (((player).1).1).0;
+);
+
+var get_player_item = fun (player : Player, index: Int) -> (
+    var inventory = (((player).1).1).0;
+    get(inventory, index);
+);
+
+var get_player_height = fun (player : Player) -> (
+    ((((player).1).1).1).0;
+);
+
+var get_player_render_object = fun (player : Player) -> (
+    (((((player).1).1).1).1).0;
+);
+
+var get_player_transform = fun (player : Player) -> (
+    (((((player).1).1).1).1).1;
+);
+
+# Room = Name * Lights * Objects * size * texture * start_position * start_direction
+# type Room = String * ((Light Array) * ((Object Array) * (Vec3 * (Texture * (Vec2 * Vec3)))))
+var get_room_name = fun (room : Room) -> (
+    (room).0;
+);
+
+var get_room_size = fun (room : Room) -> (
+    ((((room).1).1).1).0;
+);
+
+var get_room_texture = fun (room : Room) -> (
+    (((((room).1).1).1).1).0;
+);
+
+var get_room_start_position = fun (room : Room) -> (
+    (((((room).1).1).1).1).0;
+);
+
+var get_room_start_direction = fun (room : Room) -> (
+    (((((room).1).1).1).1).1;
+);
