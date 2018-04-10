@@ -2,6 +2,7 @@ extern camera.update : String -> Void = "rt.camera.updateCam";
 extern camera.getViewMatrix : Mat4 -> Void = "rt.camera.getViewM";
 extern camera.getProjMatrix : Mat4 Float Float -> Void = "rt.camera.getProjM";
 extern camera.simulateControl : Float3 String -> Void = "rt.camera.simCtrl";
+extern camera.getEye : -> Void = "rt.camera.getEyePos";
 extern control.isOn : String -> Bool = "rt.control.isOn";
 extern control.control_names : String Array = "rt.control.control_names";
 extern print : Any -> Void = "console.log";
@@ -10,36 +11,105 @@ extern rt.drawWidth: Float;
 extern rt.drawHeight: Float;
 extern get_player_cmds: -> (String Array) = "rt.control.get_cmds";
 
+var action_button = false;
 
+def get_all_triggers() (
+  var cur_room = get_current_room();
+  var objects = get_objects(cur_room);
+  var obj_length = length(objects);
+  var i = 0;
+  var triggers = array{Trigger}();
+  while (i < obj_length) (
+    var obj = objects.get(i);
+    var obj_triggers = get_object_triggers(obj);
+    var trigger_length = length(obj_triggers);
+    var j = 0;
+    while (j < trigger_length) (
+      triggers.push(obj_triggers.get(j));
+      j = j+1;
+    );
+    i = i+1;
+  );
+  triggers;
+);
+
+def collision_test_pair(obj1: Collider, obj2: Collider) (
+
+);
+
+def collision_test(obj: Collider) (
+  # test if obj collide with any colliders in this room
+  var cur_room = get_current_room();
+  var objects = get_objects(cur_room);
+  var obj_length = length(objects);
+  var i = 0;
+  var has_collision = false;
+  while (i < obj_length) (
+    var collider = get_object_collider(objects.get(i));
+    if (collision_test_pair(obj, collider)) (
+      has_collision = true;
+    )(has_collision);
+    i = i+1;
+  );
+  has_collision;
+);
 
 def update() (
-  resolve_player_action();
-  resolve_interaction();
+  var sim_record = resolve_player_action();
+  resolve_interaction(sim_record);
 );
 
 def resolve_player_action() (
   var cmd = get_player_cmds();
-  var simulation_record = simulate_player_cmd(cmd);
+  var simulation_record = simulate_player_cmds(cmd);
   simulation_record;
 );
 
 # return whether move is successful and what is the new player position
 def simulate_player_move(cmd: String) : Bool*Vec3 (
-
-)
+  var target = vec3(0.0,0.0,0.0);
+  camera.simulateControl(target, cmd);
+  collision_test(target), target;
+);
 
 # return whether a trigger is activated and what the trigger is
 # multiple triggers can happen during one command.
 def simulate_trigger(cmd: String) : Bool*(Trigger Array) (
+  if (cmd == "e") (
+    action_button = true;0;
+  )(0);
+  # check all triggers in this room
+  var all_triggers = get_all_triggers();
+  var trigger_num = length(all_triggers);
+  var activated = array{Trigger}();
+  var i = 0;
+  while (i < trigger_num) (
+    var trigger = all_triggers.get(i);
+    var cond = get_trigger_condition(trigger)
+    if (cond()) (
+      activated.push(trigger);0
+    )(0)
+    i = i + 1;
+  );
+  activated;
+);
 
-)
-
+def set_player_position(pos: Vec3) (
+  var game = get_game();
+  var player = get_player(game);
+  var transform = get_player_transform(player);
+  var newTranslation = mat4.create();
+  mat4.translate(newTranslation, newTranslation, pos);
+  transform = set_transform_translation(transform, newTranslation);
+  player = set_player_transform(player);
+  set_player(game, player);
+);
 
 def simulate_player_cmds(cmds: String Array) (
   var array_len = length();
   var i = 0;
-  var effective_cmds = array("");
-  var effective_triggers = array("");
+  var effective_cmds = array{String}();
+  var effective_triggers = array{String}();
   while (i < array_len) (
     var cmd = get(cmds, i);
     var move_record = simulate_player_move(cmd);
@@ -48,6 +118,7 @@ def simulate_player_cmds(cmds: String Array) (
     ) (0);
     var game_copy = get_game();
     set_player_position((move_record).1) #TODO, actually should update player
+    set_game(game_copy);
     var trigger_record = simulate_trigger(cmd);
     if ((trigger_record).0) (
       var triggers_activated = (trigger_record).1;
@@ -69,10 +140,23 @@ def resolve_interaction(simulation_record: (String Array) * (Trigger Array)) (
 );
 
 
-def resolve_movement() (
-
+def resolve_movement(cmd: (String Array)) (
+  var cmd_length = length(cmd);
+  var i = 0;
+  while (i < cmd_length) (
+    var c = cmd.get(i);
+    camera.update(c);
+    i = i+1;
+  );
+  set_player_position(camera.getEye());
 );
 
-def resolve_trigger() (
-
+def resolve_trigger(triggers: (Trigger Array)) (
+  var trigger_length = length(triggers);
+  var i = 0;
+  while (i < trigger_length) (
+    var t = triggers.get(i);
+    var action = get_trigger_action(t);
+    action();
+  );
 );
