@@ -95,14 +95,12 @@ def simulate_trigger(cmd: String) : Bool*(Trigger Array) (
 );
 
 def set_player_position(pos: Vec3) (
-  var game = get_game();
-  var player = get_player(game);
+  var player = get_player(get_game());
   var transform = get_player_transform(player);
   var newTranslation = mat4.create();
   mat4.translate(newTranslation, newTranslation, pos);
   transform = set_transform_translation(transform, newTranslation);
-  player = set_player_transform(player);
-  set_player(game, player);
+  set_player_transform(player, transform);
 );
 
 def simulate_player_cmds(cmds: String Array) (
