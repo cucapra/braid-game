@@ -98,15 +98,15 @@ var get_room = fun name: String -> (
     var rooms = get_rooms();
     var i = 0;
     var room_picked = -1;
-    while (i < length(rooms)) (
+    while (i <= (length(rooms) - 1)) (
         var cur_room = get(rooms, i);
-        if ((cur_room).0 == name) (
+        if (((cur_room).0) == name) (
             room_picked = i;
             i = i + length(rooms);
         ) (i;);
         i = i + 1;
     );
-    if (room_picked == -1) (
+    if (room_picked == (-1)) (
         throw("cannot find a room");
     ) (0;);
     get(rooms, room_picked)
@@ -137,15 +137,15 @@ var get_room_object = fun room: Room name: String -> (
     var objects = get_room_objects(room);
     var i = 0;
     var object_picked = -1;
-    while (i < length(objects)) (
+    while (i <= (length(objects) - 1)) (
         var cur_object = get(objects, i);
-        if ((cur_object).0 == name) (
+        if (((cur_object).0) == name) (
             object_picked = i;
             i = i + length(objects);
         ) (i;);
         i = i + 1;
     );
-    if (object_picked == -1) (
+    if (object_picked == (-1)) (
         throw("cannot find an object");
     ) (0;);
     get(objects, object_picked);
@@ -298,24 +298,24 @@ var set_current_room = fun name: String -> (
     __game = name, get_rooms(), get_player();
 );
 
-var set_rooms = fun rooms: Room Array -> (
+var set_rooms = fun rooms: (Room Array) -> (
     __game = get_starting_room(), rooms, get_player();
-)
+);
 
 var set_room = fun name: String room: Room -> (
     var rooms = get_rooms();
     var i = 0;
     var room_picked = i
-    while (i < length(rooms)) (
+    while (i <= (length(rooms) - 1)) (
         var cur_room = get(rooms, i);
-        if ((cur_room).0 == name) (
+        if (((cur_room).0) == name) (
             room_picked = i;
             i = i + length(rooms);
         ) (i);
         i = i + 1;
     );
     set(rooms, room_picked, room); # TODO: will set first elem if no such room name exists
-)
+);
 
 var set_room_light = fun room: Room index: Int light: Light -> (
     var lights = ((room).1).0;
@@ -337,23 +337,23 @@ var set_light_intensity = fun light: Light intensity: Float -> (
     new_light;
 );
 
-var set_room_objects = fun room: Room objects: Object Array -> (
-    var new_room = get_room_name(room), (room).1, objects, (room).3;
+var set_room_objects = fun room: Room objects: (Object Array) -> (
+    var new_room = get_room_name(room), ((room).1), objects, ((room).3);
 );
 
 var set_room_object = fun room: Room name: String object: Object -> (
     var objects = get_room_objects(room);
     var i = 0;
     var object_picked = -1;
-    while (i < length(objects)) (
+    while (i <= (length(objects) - 1)) (
         var cur_object = get(objects, i);
-        if ((cur_object).0 == name) (
+        if (((cur_object).0) == name) (
             object_picked = i;
             i = i + length(objects);
         ) (i);
         i = i + 1;
     );
-    if (i > -1) (
+    if (i >= 0) (
         set(objects, object_picked, object);
     )(
         objects
