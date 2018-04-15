@@ -19,12 +19,12 @@ def get_all_triggers() (
   var obj_length = length(objects);
   var i = 0;
   var triggers = array{Trigger}();
-  while (i < obj_length) (
+  while (i <= (obj_length-1)) (
     var obj = objects.get(i);
     var obj_triggers = get_object_triggers(obj);
     var trigger_length = length(obj_triggers);
     var j = 0;
-    while (j < trigger_length) (
+    while (j <= (trigger_length-1)) (
       triggers.push(obj_triggers.get(j));
       j = j+1;
     );
@@ -66,7 +66,7 @@ def resolve_player_action() (
 );
 
 # return whether move is successful and what is the new player position
-def simulate_player_move(cmd: String) : Bool*Vec3 (
+def simulate_player_move(cmd: String) (#: Bool * Vec3 (
   var target = vec3(0.0,0.0,0.0);
   camera.simulateControl(target, cmd);
   collision_test(target), target;
@@ -74,7 +74,7 @@ def simulate_player_move(cmd: String) : Bool*Vec3 (
 
 # return whether a trigger is activated and what the trigger is
 # multiple triggers can happen during one command.
-def simulate_trigger(cmd: String) : Bool*(Trigger Array) (
+def simulate_trigger(cmd: String) (#: Bool*(Trigger Array) (
   if (cmd == "e") (
     action_button = true;0;
   )(0);
@@ -83,12 +83,12 @@ def simulate_trigger(cmd: String) : Bool*(Trigger Array) (
   var trigger_num = length(all_triggers);
   var activated = array{Trigger}();
   var i = 0;
-  while (i < trigger_num) (
+  while (i <= (trigger_num-1)) (
     var trigger = all_triggers.get(i);
     var cond = get_trigger_condition(trigger)
     if (cond()) (
       activated.push(trigger);0
-    )(0)
+    )(0);
     i = i + 1;
   );
   activated;
@@ -108,7 +108,7 @@ def simulate_player_cmds(cmds: String Array) (
   var i = 0;
   var effective_cmds = array{String}();
   var effective_triggers = array{String}();
-  while (i < array_len) (
+  while (i <= (array_len-1)) (
     var cmd = get(cmds, i);
     var move_record = simulate_player_move(cmd);
     if ((move_record).0) (
@@ -122,7 +122,7 @@ def simulate_player_cmds(cmds: String Array) (
       var triggers_activated = (trigger_record).1;
       var res_length = length(triggers_activated);
       var j = 0;
-      while (j < res_length) (
+      while (j <= (res_length-1)) (
         push(effective_triggers, triggers_activated.get(j));
         j = j+1;
       );0
@@ -141,7 +141,7 @@ def resolve_interaction(simulation_record: (String Array) * (Trigger Array)) (
 def resolve_movement(cmd: (String Array)) (
   var cmd_length = length(cmd);
   var i = 0;
-  while (i < cmd_length) (
+  while (i <= (cmd_length-1)) (
     var c = cmd.get(i);
     camera.update(c);
     i = i+1;
@@ -152,7 +152,7 @@ def resolve_movement(cmd: (String Array)) (
 def resolve_trigger(triggers: (Trigger Array)) (
   var trigger_length = length(triggers);
   var i = 0;
-  while (i < trigger_length) (
+  while (i <= (trigger_length-1)) (
     var t = triggers.get(i);
     var action = get_trigger_action(t);
     action();
