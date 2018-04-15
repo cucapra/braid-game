@@ -44,7 +44,7 @@ def collision_test(obj: Collider) (
   var obj_length = length(objects);
   var i = 0;
   var has_collision = false;
-  while (i < obj_length) (
+  while (i <= (obj_length-1)) (
     var collider = get_object_collider(objects.get(i));
     if (collision_test_pair(obj, collider)) (
       has_collision = true;
