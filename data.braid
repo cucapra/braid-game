@@ -426,33 +426,36 @@ var set_player_item = fun (player : Player, index: Int, inv_item : Inventory) ->
 );
 
 var set_player_height = fun (player : Player, height: Float) -> (
-    (player).0, (player).1, (player).2, height, (player).4, (player).5;
+    var new_player = (player).0, (player).1, (player).2, height, (player).4, (player).5;
+    set_player(get_game(), new_player);
 );
 
 var set_player_render_object = fun (player : Player, render_obj: RenderObject) -> (
-    (player).0, (player).1, (player).2, (player).3, render_obj, (player).5;
+    var new_player = (player).0, (player).1, (player).2, (player).3, render_obj, (player).5;
+    set_player(get_game(), new_player);
 );
 
 var set_player_transform = fun (player : Player, transform: Transform) -> (
-    (player).0, (player).1, (player).2, (player).3, (player).4, transform;
+    var new_player = (player).0, (player).1, (player).2, (player).3, (player).4, transform;
+    set_player(get_game(), new_player);
 );
 # Room = Name * Lights * Objects * size * texture * start_position * start_direction
 var set_room_name = fun (room : Room, name: String) -> (
-    name, (room).1;
+    name, (room).1, (room).2, (room).3, (room).4, (room).5, (room).6;
 );
 
 var set_room_size = fun (room : Room, size: Vec3) -> (
-    (room).0,((room).1).0,(((room).1).1).0, size ,((((room).1).1).1).1;
+    (room).0, (room).1, (room).2, size ,(room).4, (room).5, (room).6;
 );
 
 var set_room_texture = fun (room : Room, texture: Texture) -> (
-    (room).0,((room).1).0,(((room).1).1).0, ((((room).1).1).1).0 ,texture, (((((room).1).1).1).1).1;
+    (room).0, (room).1, (room).2, (room).3, texture, (room).5, (room).6;
 );
 
 var set_room_start_position = fun (room : Room, start_pos: Vec2) -> (
-    (room).0,((room).1).0,(((room).1).1).0, ((((room).1).1).1).0 , (((((room).1).1).1).1).0, start_pos, ((((((room).1).1).1).1).1).1;
+    (room).0, (room).1, (room).2, (room).3, (room).4, start_pos, (room).6;
 );
 
 var set_room_start_direction = fun (room : Room, start_dir: Vec3) -> (
-    (room).0,((room).1).0,(((room).1).1).0, ((((room).1).1).1).0 , (((((room).1).1).1).1).0, ((((((room).1).1).1).1).1).0, start_dir;
+    (room).0, (room).1, (room).2, (room).3, (room).4, (room).5, start_dir;
 );
