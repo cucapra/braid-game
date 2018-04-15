@@ -151,158 +151,158 @@ var get_room_object = fun room: Room name: String -> (
     get(objects, object_picked);
 );
 
-var get_object_position = fun (object: Object) -> (
+var get_object_position = fun object: Object -> (
     (object).1;
 );
 
-var get_object_transform = fun (object: Object) -> (
+var get_object_transform = fun object: Object -> (
     (object).2;
 );
 
-var get_object_renderObject = fun (object: Object) -> (
+var get_object_renderObject = fun object: Object -> (
     (object).3;
 );
 
-var get_object_collider = fun (object: Object) -> (
+var get_object_collider = fun object: Object -> (
     (object).4;
 );
 
-var get_object_lights = fun (object: Object) -> (
+var get_object_lights = fun object: Object -> (
     (object).5;
 );
 
-var get_object_light = fun (object: Object， index: Int) -> (
+var get_object_light = fun object: Object index: Int -> (
     get((object).5, index);
 );
 
-var get_object_triggers = fun (object: Object) -> (
+var get_object_triggers = fun object: Object -> (
     (object).6;
 );
 
-var get_transform_translation = fun (transform: Transform) -> (
+var get_transform_translation = fun transform: Transform -> (
     (transform).0;
 );
 
-var get_transform_rotationX = fun (transform: Transform) -> (
+var get_transform_rotationX = fun transform: Transform -> (
     (transform).1;
 );
 
-var get_transform_rotationY = fun (transform: Transform) -> (
+var get_transform_rotationY = fun transform: Transform -> (
     (transform).2;
 );
 
-var get_transform_rotationZ = fun (transform: Transform) -> (
+var get_transform_rotationZ = fun transform: Transform -> (
     (transform).3;
 );
 
-var get_transform_scale = fun (transform: Transform) -> (
+var get_transform_scale = fun transform: Transform -> (
     (transform).4;
 );
 
-var get_collider_name = fun (collider: Collider) -> (
+var get_collider_name = fun collider: Collider -> (
     (collider).0;
 );
 
-var get_collider_dimension = fun (collider: Collider) -> (
+var get_collider_dimension = fun collider: Collider -> (
     (collider).1;
 );
 
-var get_collider_transform = fun (collider: Collider) -> (
+var get_collider_transform = fun collider: Collider -> (
     (collider).2;
 );
 
-var get_render_object_mesh = fun (render_obj: RenderObject) -> (
+var get_render_object_mesh = fun render_obj: RenderObject -> (
     (render_obj).0;
 );
 
-var get_render_object_texture = fun (render_obj: RenderObject) -> (
+var get_render_object_texture = fun render_obj: RenderObject -> (
     (render_obj).1;
 );
 
-var get_render_object_shader = fun (render_obj: RenderObject) -> (
+var get_render_object_shader = fun render_obj: RenderObject -> (
     (render_obj).2;
 );
 
-var get_trigger_name = fun (trigger: Trigger) -> (
+var get_trigger_name = fun trigger: Trigger -> (
     (trigger).0;
 );
 
-var get_trigger_condition = fun (trigger: Trigger) -> (
+var get_trigger_condition = fun trigger: Trigger -> (
     (trigger).1;
 );
 
-var get_trigger_action = fun (trigger: Trigger) -> (
+var get_trigger_action = fun trigger: Trigger -> (
     (trigger).2;
 );
 
-var get_player = fun (game: Game) -> (
+var get_player = fun game: Game -> (
     (game).2;
 );
 
-var get_player_room = fun (player : Player) -> (
+var get_player_room = fun player : Player -> (
     (player).0;
 );
 
-var get_player_collider = fun (player : Player) -> (
+var get_player_collider = fun player : Player -> (
     (player).1;
 );
 
-var get_player_inventory = fun (player : Player) -> (
+var get_player_inventory = fun player : Player -> (
     (player).2;
 );
 
-var get_player_item = fun (player : Player, index: Int) -> (
+var get_player_item = fun player : Player index: Int -> (
     var inventory = (player).2;
     get(inventory, index);
 );
 
-var get_player_height = fun (player : Player) -> (
+var get_player_height = fun player : Player -> (
     (player).3;
 );
 
-var get_player_render_object = fun (player : Player) -> (
+var get_player_render_object = fun player : Player -> (
     (player).4;
 );
 
-var get_player_transform = fun (player : Player) -> (
+var get_player_transform = fun player : Player -> (
     (player).5;
 );
 
-var get_room_name = fun (room : Room) -> (
+var get_room_name = fun room : Room -> (
     (room).0;
 );
 
-var get_room_size = fun (room : Room) -> (
+var get_room_size = fun room : Room -> (
     (room).3;
 );
 
-var get_room_texture = fun (room : Room) -> (
+var get_room_texture = fun room : Room -> (
     (room).4;
 );
 
-var get_room_start_position = fun (room : Room) -> (
+var get_room_start_position = fun room : Room -> (
     (room).5;
 );
 
-var get_room_start_direction = fun (room : Room) -> (
+var get_room_start_direction = fun room : Room -> (
     (room).6;
 );
 
 ####################################################
 
-var set_game = fun (game: Game) -> (
+var set_game = fun game: Game -> (
     __game = game;
 );
 
-var set_current_room = fun (name: String) -> (
+var set_current_room = fun name: String -> (
     __game = name, get_rooms(), get_player();
 );
 
-var set_rooms = fun (rooms: Room Array) -> (
+var set_rooms = fun rooms: Room Array -> (
     __game = get_starting_room(), rooms, get_player();
 )
 
-var set_room = fun (name: String, room: Room) -> (
+var set_room = fun name: String room: Room -> (
     var rooms = get_rooms();
     var i = 0;
     var room_picked = i
@@ -317,31 +317,31 @@ var set_room = fun (name: String, room: Room) -> (
     set(rooms, room_picked, room); # TODO: will set first elem if no such room name exists
 )
 
-var set_room_light = fun (room: Room, index: Int, light: Light) -> (
+var set_room_light = fun room: Room index: Int light: Light -> (
     var lights = ((room).1).0;
     set(lights, i, light);
 );
 
-var set_light_color = fun (light: Light, color: Vec3) -> (
+var set_light_color = fun light: Light color: Vec3 -> (
     var new_light = color, get_light_position(), get_light_intensity();
     new_light;
 );
 
-var set_light_position = fun (light: Light, position: Vec3) -> (
+var set_light_position = fun light: Light position: Vec3 -> (
     var new_light = get_light_color(), position, get_light_intensity();
     new_light;
 );
 
-var set_light_intensity = fun (light: Light, intensity: Float) -> (
+var set_light_intensity = fun light: Light intensity: Float -> (
     var new_light = get_light_color(), get_light_position(), intensity;
     new_light;
 );
 
-var set_room_objects = fun (room: Room, objects: Object Array) -> (
+var set_room_objects = fun room: Room objects: Object Array -> (
     var new_room = get_room_name(room), (room).1, objects, (room).3;
 );
 
-var set_room_object = fun (room: Room, name: String, object: Object) -> (
+var set_room_object = fun room: Room name: String object: Object -> (
     var objects = get_room_objects(room);
     var i = 0;
     var object_picked = -1;
@@ -361,13 +361,13 @@ var set_room_object = fun (room: Room, name: String, object: Object) -> (
     room;
 );
 
-var set_object_position = fun (object: Object, position: Vec3) -> (
+var set_object_position = fun object: Object position: Vec3 -> (
     var new_object = (object).0, position, (object).2, (object).3,
     (object).4, (object).5, (object).6;
     new_object;
 );
 
-var set_object_transform = fun (object: Object, transform: Transform) -> (
+var set_object_transform = fun object: Object transform: Transform -> (
     var new_object = (object).0, get_object_position(object), transform,
     (object).3, (object).4, (object).5, (object).6;
     new_object;
