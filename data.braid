@@ -100,7 +100,7 @@ var get_room = fun name: String -> (
     var room_picked = -1;
     while (i <= (length(rooms) - 1)) (
         var cur_room = get(rooms, i);
-        if (((cur_room).0) == name) (
+        if (equal((cur_room).0, name)) (
             room_picked = i;
             i = i + length(rooms);
         ) (i;);
@@ -139,7 +139,7 @@ var get_room_object = fun room: Room name: String -> (
     var object_picked = -1;
     while (i <= (length(objects) - 1)) (
         var cur_object = get(objects, i);
-        if (((cur_object).0) == name) (
+        if (equal((cur_object).0, name)) (
             object_picked = i;
             i = i + length(objects);
         ) (i;);
@@ -308,7 +308,7 @@ var set_room = fun name: String room: Room -> (
     var room_picked = i
     while (i <= (length(rooms) - 1)) (
         var cur_room = get(rooms, i);
-        if (((cur_room).0) == name) (
+        if (equal((cur_room).0, name)) (
             room_picked = i;
             i = i + length(rooms);
         ) (i);
@@ -347,7 +347,7 @@ var set_room_object = fun room: Room name: String object: Object -> (
     var object_picked = -1;
     while (i <= (length(objects) - 1)) (
         var cur_object = get(objects, i);
-        if (((cur_object).0) == name) (
+        if (equal((cur_object).0, name)) (
             object_picked = i;
             i = i + length(objects);
         ) (i);
