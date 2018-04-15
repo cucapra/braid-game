@@ -75,7 +75,7 @@ def simulate_player_move(cmd: String) (#: Bool * Vec3 (
 # return whether a trigger is activated and what the trigger is
 # multiple triggers can happen during one command.
 def simulate_trigger(cmd: String) (#: Bool*(Trigger Array) (
-  if (cmd == "e") (
+  if (equal(cmd,"e")) (
     action_button = true;0;
   )(0);
   # check all triggers in this room
