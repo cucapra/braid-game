@@ -107,8 +107,12 @@ var get_object_collider = fun (object: Object) -> (
     (object).4;
 );
 
-var get_object_light = fun (object: Object) -> (
+var get_object_lights = fun (object: Object) -> (
     (object).5;
+);
+
+var get_object_light = fun (object: Object， index: Int) -> (
+    get((object).5, index);
 );
 
 var get_object_triggers = fun (object: Object) -> (
