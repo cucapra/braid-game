@@ -17,12 +17,23 @@ type Room = String * (Light Array) * (Object Array) * Vec3 * Texture * Vec2 * Ve
 # Game = starting_room * (Room Array * Player)
 type Game = String * (Room Array) * Player;
 
+var __translate = mat4();
+var __rotateX = mat4();
+var __rotateY = mat4();
+var __rotateZ = mat4();
+var __scale = mat4();
+mat4.translate(__translate, __translate, vec3(0.0, 0.0, 0.0));
+mat4.rotateX(__rotateX, __rotateX, 0.0);
+mat4.rotateY(__rotateY, __rotateY, 0.0);
+mat4.rotateZ(__rotateZ, __rotateZ, 0.0);
+mat4.scale(__scale, __scale, vec3(1.0, 1.0, 1.0));
+
 var __identity = (
-    mat4.translate(mat4.create(), mat4.create(), vec3(0.0, 0.0, 0.0)),
-    mat4.rotateX(mat4.create(), mat4.create(), 0.0),
-    mat4.rotateY(mat4.create(), mat4.create(), 0.0),
-    mat4.rotateZ(mat4.create(), mat4.create(), 0.0),
-    mat4.scale(mat4.create(), mat4.create(), vec3(1.0, 1.0, 1.0))
+    __translate,
+    __rotateX,
+    __rotateY,
+    __rotateZ,
+    __scale
 );
 
 var __wood = load_texture("wood1.png");
@@ -114,7 +125,7 @@ var get_room = fun name: String -> (
 
 var get_room_light = fun room: Room index: Int -> (
     var lights = (room).1;
-    get(lights, i);
+    get(lights, index);
 );
 
 var get_light_color = fun light: Light -> (
@@ -295,17 +306,17 @@ var set_game = fun game: Game -> (
 );
 
 var set_current_room = fun name: String -> (
-    __game = name, get_rooms(), get_player();
+    __game = name, get_rooms(), get_player(__game);
 );
 
 var set_rooms = fun rooms: (Room Array) -> (
-    __game = get_starting_room(), rooms, get_player();
+    __game = get_current_room(), rooms, get_player(__game);
 );
 
 var set_room = fun name: String room: Room -> (
     var rooms = get_rooms();
     var i = 0;
-    var room_picked = i
+    var room_picked = i;
     while (i <= (length(rooms) - 1)) (
         var cur_room = get(rooms, i);
         if (equal((cur_room).0, name)) (
@@ -318,22 +329,22 @@ var set_room = fun name: String room: Room -> (
 );
 
 var set_room_light = fun room: Room index: Int light: Light -> (
-    var lights = ((room).1).0;
-    set(lights, i, light);
+    var lights = (room).1;
+    set(lights, index, light);
 );
 
 var set_light_color = fun light: Light color: Vec3 -> (
-    var new_light = color, get_light_position(), get_light_intensity();
+    var new_light = color, get_light_position(light), get_light_intensity(light);
     new_light;
 );
 
 var set_light_position = fun light: Light position: Vec3 -> (
-    var new_light = get_light_color(), position, get_light_intensity();
+    var new_light = get_light_color(light), position, get_light_intensity(light);
     new_light;
 );
 
 var set_light_intensity = fun light: Light intensity: Float -> (
-    var new_light = get_light_color(), get_light_position(), intensity;
+    var new_light = get_light_color(light), get_light_position(light), intensity;
     new_light;
 );
 
@@ -355,8 +366,9 @@ var set_room_object = fun room: Room name: String object: Object -> (
     );
     if (i >= 0) (
         set(objects, object_picked, object);
+        objects;
     )(
-        objects
+        objects;
     );
     room;
 );
@@ -374,7 +386,7 @@ var set_object_transform = fun object: Object transform: Transform -> (
 );
 
 var set_object_renderObject = fun object: Object render_obj: RenderObject -> (
-    var new_object = object.0, get_object_position(object), get_object_transform(object),
+    var new_object = ((object).0), get_object_position(object), get_object_transform(object),
       render_obj, ((object).4), ((object).5), ((object).6);
     new_object;
 );
@@ -386,14 +398,14 @@ var set_object_collider = fun object:Object collider:Collider -> (
 );
 
 var set_object_light = fun object:Object light:Light -> (
-    var new_object = object.0, get_object_position(object), get_object_transform(object),
+    var new_object = ((object).0), get_object_position(object), get_object_transform(object),
       get_object_renderObject(object), get_object_collider(object), light, ((object).6);
     new_object;
 );
 
 var set_object_triggers = fun object:Object triggers: (Trigger Array) -> (
-    var new_object = object.0, get_object_position(object), get_object_transform(object),
-      get_object_renderObject(object), get_object_collider(object), get_object_light(object), triggers;
+    var new_object = ((object).0), get_object_position(object), get_object_transform(object),
+      get_object_renderObject(object), get_object_collider(object), get_object_lights(object), triggers;
     new_object;
 );
 
