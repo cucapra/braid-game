@@ -1,33 +1,93 @@
 extern throw: String -> Int = "throw";
 
 type Transform = Mat4 * Mat4 * Mat4 * Mat4 * Mat4 # Translation * Rx * Ry * Rx * Scale
+# Collider = name * parameter * transform
 type Collider = String * Float2 * Transform # TODO: how to define isCollision function here
 type Shader = String
 type RenderObject = Mesh * Texture * Shader
 type Light = Vec3 * Vec3 * Float # Color * Position * Intensity
 type Trigger = String * ( -> Bool) * ( -> Void) # name * condition * action
-# Object = name * position * local_transform * render_obj * * collider * light * triggers
-type Object = String * Vec3 * Transform * RenderObject * Collider * Light * (Trigger Array)
+# Object = name * position * local_transform * render_obj * * collider * light array * triggers
+type Object = String * Vec3 * Transform * RenderObject * Collider * (Light Array) * (Trigger Array)
 type Inventory = String
-type Player = Int * Collider * (Inventory Array) * Float * RenderObject * Transform
+# Player = Room * Collider * Inventory Array * Height * RenderObject * Transform
+type Player = String * Collider * (Inventory Array) * Float * RenderObject * Transform
 # Room = Name * Lights * Objects * size * texture * start_position * start_direction
 type Room = String * (Light Array) * (Object Array) * Vec3 * Texture * Vec2 * Vec3
 # Game = starting_room * (Room Array * Player)
 type Game = String * (Room Array) * Player
 
-var __game: Game = (1, ); # TODO:
-var __cur_room = (__game).0;
+var __identity: Transform = (
+    mat4.translate(mat4.create(), mat4.create(), vec3(0.0, 0.0, 0.0)),
+    mat4.rotateX(mat4.create(), mat4.create(), 0.0),
+    mat4.rotateY(mat4.create(), mat4.create(), 0.0),
+    mat4.rotateZ(mat4.create(), mat4.create(), 0.0),
+    mat4.scale(mat4.create(), mat4.create(), vec3(1.0, 1.0, 1.0))
+);
+
+var __wood: Texture = rt.load_texture("wood1.png");
+
+var __game: Game = (
+    "room1",
+    # Room
+    array(
+        (
+            "room1",
+            # Lights
+            array(
+                (vec3(1.0, 1.0, 1.0), vec3(0.0, 6.0, 0.0), 5.0)
+            ),
+            # Objects
+            array(
+                (
+                    # Name
+                    "teapot",
+                    # Position
+                    vec3(0.0, 2.5, 10.0),
+                    # Local Transform,
+                    __identity,
+                    # Render Object,
+                    (rt.teapot, __wood, "phong"),
+                    # Collider
+                    ("sphere", vec2(0.5, 0.5), __identity),
+                    # Light
+                    array{Light}(),
+                    # Triggers
+                    array{Trigger}()
+                )
+            ),
+            # Size
+            vec3(20.0, 6.0, 20.0),
+            # Room Texture
+            __wood,
+            # Start Position,
+            vec2(0.0, 0.0),
+            # Start Direction
+            vec3(0.0, 0.0, 1.0)
+        )
+    ),
+    # Player
+    (
+        "room1",
+        # Collider
+        ("sphere", vec2(3.0, 3.0), __identity),
+        # Inventory
+        array{Inventory}(),
+        # Height
+        2.5,
+        # RenderObject
+        (rt.teapot, __wood, "phong"),
+        # Transform
+        __identity
+    )
+);
 
 var get_game = fun -> (
     __game
 );
 
-var get_starting_room = fun -> (
-    (__game).0
-);
-
 var get_current_room = fun -> (
-    __cur_room
+    (__game).0
 );
 
 var get_rooms = fun -> (
@@ -230,12 +290,8 @@ var set_game = fun (game: Game) -> (
     __game = game;
 );
 
-var set_starting_room = fun (name: String) -> (
+var set_current_room = fun (name: String) -> (
     __game = name, get_rooms(), get_player();
-);
-
-var set_current_room = fun (room : String) -> (
-    __cur_room = room;
 );
 
 var set_rooms = fun (rooms: Room Array) -> (
