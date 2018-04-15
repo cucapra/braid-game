@@ -25,7 +25,7 @@ var __identity = (
     mat4.scale(mat4.create(), mat4.create(), vec3(1.0, 1.0, 1.0))
 );
 
-var __wood = rt.load_texture("wood1.png");
+var __wood = load_texture("wood1.png");
 
 var __game = (
     "room1",
@@ -47,7 +47,7 @@ var __game = (
                     # Local Transform,
                     __identity,
                     # Render Object,
-                    (rt.teapot, __wood, "phong"),
+                    (teapot, __wood, "phong"),
                     # Collider
                     ("sphere", vec2(0.5, 0.5), __identity),
                     # Light
@@ -76,7 +76,7 @@ var __game = (
         # Height
         2.5,
         # RenderObject
-        (rt.teapot, __wood, "phong"),
+        (teapot, __wood, "phong"),
         # Transform
         __identity
     )

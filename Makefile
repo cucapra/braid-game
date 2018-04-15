@@ -10,7 +10,7 @@ test.braid: data.braid game_state.braid game_engine.braid
 	cat node_modules/braid-glrt/preamble.braid data.braid game_state.braid game_engine.braid > test.braid
 
 engine: test.braid
-	cat node_modules/braid-glrt/preamble.braid data.braid game_state.braid game_engine.braid | braid -cmw
+	cat test.braid | braid -cmw
 
 render.js: render.braid
 	cat node_modules/braid-glrt/preamble.braid data.braid game_state.braid game_engine.braid $^ | braid -cmw > $@
