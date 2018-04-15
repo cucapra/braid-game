@@ -374,26 +374,26 @@ var set_object_transform = fun object: Object transform: Transform -> (
 );
 
 var set_object_renderObject = fun object: Object render_obj: RenderObject -> (
-    var new_object = object.0, (get_object_position(object), get_object_transform(object),
+    var new_object = object.0, get_object_position(object), get_object_transform(object),
       render_obj, ((object).4), ((object).5), ((object).6);
     new_object;
 );
 
 var set_object_collider = fun object:Object collider:Collider -> (
-    var new_object = ((object).0), (get_object_position(object), get_object_transform(object),
+    var new_object = ((object).0), get_object_position(object), get_object_transform(object),
       get_object_renderObject(object), collider, ((object).5), ((object).6);
     new_object;
 );
 
 var set_object_light = fun object:Object light:Light -> (
-    var new_object = object.0, (get_object_position(object), get_object_transform(object),
+    var new_object = object.0, get_object_position(object), get_object_transform(object),
       get_object_renderObject(object), get_object_collider(object), light, ((object).6);
     new_object;
 );
 
 var set_object_triggers = fun object:Object triggers: (Trigger Array) -> (
-    var new_object = object.0, (get_object_position(object), get_object_transform(object),
-      get_object_renderObject(object), get_object_collider(object), get_object_light(object), triggers);
+    var new_object = object.0, get_object_position(object), get_object_transform(object),
+      get_object_renderObject(object), get_object_collider(object), get_object_light(object), triggers;
     new_object;
 );
 
