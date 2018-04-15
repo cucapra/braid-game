@@ -1,23 +1,23 @@
 extern throw: String -> Int = "throw";
 
-type Transform = Mat4 * Mat4 * Mat4 * Mat4 * Mat4 # Translation * Rx * Ry * Rx * Scale
+type Transform = Mat4 * Mat4 * Mat4 * Mat4 * Mat4; # Translation * Rx * Ry * Rx * Scale
 # Collider = name * parameter * transform
-type Collider = String * Float2 * Transform # TODO: how to define isCollision function here
-type Shader = String
-type RenderObject = Mesh * Texture * Shader
-type Light = Vec3 * Vec3 * Float # Color * Position * Intensity
-type Trigger = String * ( -> Bool) * ( -> Void) # name * condition * action
+type Collider = String * Float2 * Transform; # TODO: how to define isCollision function here
+type Shader = String;
+type RenderObject = Mesh * Texture * Shader;
+type Light = Vec3 * Vec3 * Float; # Color * Position * Intensity
+type Trigger = String * ( -> Bool) * ( -> Void); # name * condition * action
 # Object = name * position * local_transform * render_obj * * collider * light array * triggers
-type Object = String * Vec3 * Transform * RenderObject * Collider * (Light Array) * (Trigger Array)
-type Inventory = String
+type Object = String * Vec3 * Transform * RenderObject * Collider * (Light Array) * (Trigger Array);
+type Inventory = String;
 # Player = Room * Collider * Inventory Array * Height * RenderObject * Transform
-type Player = String * Collider * (Inventory Array) * Float * RenderObject * Transform
+type Player = String * Collider * (Inventory Array) * Float * RenderObject * Transform;
 # Room = Name * Lights * Objects * size * texture * start_position * start_direction
-type Room = String * (Light Array) * (Object Array) * Vec3 * Texture * Vec2 * Vec3
+type Room = String * (Light Array) * (Object Array) * Vec3 * Texture * Vec2 * Vec3;
 # Game = starting_room * (Room Array * Player)
-type Game = String * (Room Array) * Player
+type Game = String * (Room Array) * Player;
 
-var __identity: Transform = (
+var __identity = (
     mat4.translate(mat4.create(), mat4.create(), vec3(0.0, 0.0, 0.0)),
     mat4.rotateX(mat4.create(), mat4.create(), 0.0),
     mat4.rotateY(mat4.create(), mat4.create(), 0.0),
@@ -25,9 +25,9 @@ var __identity: Transform = (
     mat4.scale(mat4.create(), mat4.create(), vec3(1.0, 1.0, 1.0))
 );
 
-var __wood: Texture = rt.load_texture("wood1.png");
+var __wood = rt.load_texture("wood1.png");
 
-var __game: Game = (
+var __game = (
     "room1",
     # Room
     array(
@@ -92,9 +92,9 @@ var get_current_room = fun -> (
 
 var get_rooms = fun -> (
     (__game).1
-)
+);
 
-var get_room = fun (name: String) -> (
+var get_room = fun name: String -> (
     var rooms = get_rooms();
     var i = 0;
     var room_picked = -1;
@@ -110,30 +110,30 @@ var get_room = fun (name: String) -> (
         throw("cannot find a room");
     ) (0;);
     get(rooms, room_picked)
-)
+);
 
-var get_room_light = fun (room: Room, index: Int) -> (
+var get_room_light = fun room: Room index: Int -> (
     var lights = (room).1;
     get(lights, i);
 );
 
-var get_light_color = fun (light: Light) -> (
+var get_light_color = fun light: Light -> (
     (light).0;
 );
 
-var get_light_position = fun (light: Light) -> (
+var get_light_position = fun light: Light -> (
     (light).1;
 );
 
-var get_light_intensity = fun (light: Light) -> (
+var get_light_intensity = fun light: Light -> (
     (light).2;
 );
 
-var get_room_objects = fun (room: Room) -> (
+var get_room_objects = fun room: Room -> (
     (room).2;
 );
 
-var get_room_object = fun (room: Room, name: String) -> (
+var get_room_object = fun room: Room name: String -> (
     var objects = get_room_objects(room);
     var i = 0;
     var object_picked = -1;
