@@ -32,14 +32,7 @@ var roomSize = 100.0;
 # Load a texture from an image.
 var tex = texture(load_image("wood1.png"));
 
-# Load a room
-var wallMesh = load_obj("wall.obj");
-var wallPosition = mesh_positions(wallMesh);
-var wallNormal = mesh_normals(wallMesh);
-var wallTexcoord = mesh_texcoords(wallMesh);
-var wallIndices = mesh_indices(wallMesh);
-var wallSize = mesh_size(wallMesh);
-var wallTex = tex;
+
 
 
 # The parameters for the Phong shader.
@@ -94,10 +87,6 @@ mat4.translate(t_model, t_model, vec3(50.0, 20.0, -50.0));
 var room_model = mat4.create();
 mat4.scale(room_model, room_model, vec3(0.5, 0.5, 0.5));
 mat4.translate(room_model, room_model, vec3(100.0, 100.0, -100.0));
-
-var wall_model = mat4.create();
-mat4.scale(wall_model, wall_model, vec3(10, 10, 10));
-mat4.translate(wall_model, wall_model, vec3(2, 1, -2));
 
 print(wall_model * vec4(0, 0, 0, 1));
 
@@ -163,6 +152,52 @@ var update_state = fun -> (
   wall_collision_resolution();
   camera.getViewMatrix(viewMatrix);
   camera.getProjMatrix(projection, rt.drawWidth, rt.drawHeight);
+);
+
+var draw_room = fun lights: (Light Array) -> (
+  # TODO Load a room from the walls
+  var wallMesh = load_obj("wall.obj");
+  var wallPosition = mesh_positions(wallMesh);
+  var wallNormal = mesh_normals(wallMesh);
+  var wallTexcoord = mesh_texcoords(wallMesh);
+  var wallIndices = mesh_indices(wallMesh);
+  var wallSize = mesh_size(wallMesh);
+  var wallTex = tex;
+  var wall_model = mat4.create();
+  mat4.scale(wall_model, wall_model, vec3(10, 10, 10));
+  mat4.translate(wall_model, wall_model, vec3(2, 1, -2));
+);
+
+def draw_object(obj_pos: Vec3, obj_transform: Transform, obj_mesh: Mesh,
+  obj_tex: Texture, obj_shader: String, lights: (Light Array)) (
+  
+)
+
+var draw_objects = fun lights: (Light Array) -> (
+  var room = get_room(get_current_room());
+  var objects = get_room_objects(room);
+  var obj_i = 0;
+  var obj_len = length(objects);
+  while (obj_i <= obj_len-1) (
+    var obj_pos = get_object_position(get(objects, obj_i));
+    var obj_transform = get_object_transform(get(objects, obj_i));
+    var obj_render = get_object_renderObject(get(objects, obj_i));
+    var obj_mesh = get_render_object_mesh(obj_render);
+    var obj_tex = get_render_object_texture(obj_render);
+    var obj_shader = get_render_object_shader(obj_render);
+    draw_object(obj_pos, obj_transform, obj_mesh, obj_tex, obj_shader, lights);
+  );
+);
+
+var draw_player = fun lights: (Light Array) -> (
+
+);
+
+var draw_scene = fun -> (
+  var lights = get_scene_lights();
+  draw_room(lights);
+  draw_objects(lights);
+  draw_player(lights);
 );
 
 render js<
