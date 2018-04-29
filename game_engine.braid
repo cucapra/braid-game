@@ -2,7 +2,7 @@ extern camera.update : String -> Void = "rt.camera.updateCam";
 extern camera.getViewMatrix : Mat4 -> Void = "rt.camera.getViewM";
 extern camera.getProjMatrix : Mat4 Float Float -> Void = "rt.camera.getProjM";
 extern camera.simulateControl : Float3 String -> Void = "rt.camera.simCtrl";
-extern camera.getEye : -> Void = "rt.camera.getEyePos";
+extern camera.getEye : -> Float3 = "rt.camera.getEyePos";
 extern control.isOn : String -> Bool = "rt.control.isOn";
 extern control.control_names : String Array = "rt.control.control_names";
 extern print : Any -> Void = "console.log";
@@ -34,8 +34,105 @@ var get_all_triggers = fun -> (
   triggers;
 );
 
+
+# return whether a trigger is activated and what the trigger is
+# multiple triggers can happen during one command.
+def simulate_trigger(cmd: String) (#: Bool*(Trigger Array) (
+  if (equal(cmd,"e")) (
+    action_button = true;0;
+  )(0);
+  # check all triggers in this room
+  var all_triggers = get_all_triggers();
+  var trigger_num = length(all_triggers);
+  var activated = array{Trigger}();
+  var i = 0;
+  while (i <= (trigger_num-1)) (
+    var trigger = get(all_triggers, i);
+    var cond = get_trigger_condition(trigger);
+    if (cond()) (
+      push(activated, trigger);
+      0;
+    )(0;);
+    i = i + 1;
+  );
+  activated;
+);
+
+def apply_transform_pos(trans: Transform, pos: Vec3) (
+  var t = get_transform_translation(trans);
+  var rx = get_transform_rotationX(trans);
+  var ry = get_transform_rotationY(trans);
+  var rz = get_transform_rotationZ(trans);
+  var s = get_transform_scale(trans);
+  var hpos = vec4(pos, 1.0);
+  hpos = t*rx*ry*rz*s*hpos;
+  vec3(hpos);
+);
+
+def apply_transform_dir(trans: Transform, pos: Vec3) (
+  var t = get_transform_translation(trans);
+  var rx = get_transform_rotationX(trans);
+  var ry = get_transform_rotationY(trans);
+  var rz = get_transform_rotationZ(trans);
+  var s = get_transform_scale(trans);
+  var hpos = vec4(pos, 0.0);
+  hpos = t*rx*ry*rz*s*hpos;
+  vec3(hpos);
+);
+
+def get_sphere_collider_attr(collider: Collider) (
+  #get pos*radius
+  var radius = swizzle(get_collider_dimension(collider), "x");
+  var trans = get_collider_transform(collider);
+  apply_transform_pos(trans, vec3(0.0,0.0,0.0)), radius
+);
+
+def get_plane_collider_attr(collider: Collider) (
+  #get pos*normal*tangent1*tangent2*width*height
+  var w = swizzle(get_collider_dimension(collider), "x");
+  var h = swizzle(get_collider_dimension(collider), "y");
+  var trans = get_collider_transform(collider);
+  var pos = apply_transform_pos(trans, vec3(0.0,0.0,0.0));
+  var n = apply_transform_dir(trans, vec3(0.0,0.0,-1.0));
+  var t1 = apply_transform_dir(trans, vec3(1.0,0.0,0.0));
+  var t2 = apply_transform_dir(trans, vec3(0.0,1.0,0.0));
+  pos,n,t1,t2,w,h
+);
+
+#TODO handle other kind of colliders
 def collision_test_pair(obj1: Collider, obj2: Collider) (
-  false;
+  var collider_name1 = get_collider_name(obj1);
+  var collider_name2 = get_collider_name(obj2);
+  if (equal(collider_name1, "sphere")) (
+    if (equal(collider_name2, "sphere")) (
+      false
+    )(
+      false
+    )
+  ) (
+    if (equal(collider_name2, "sphere")) (
+      false
+    )(
+      false
+    )
+  )
+);
+
+def new_collider_position(collider: Collider, pos: Vec3) (
+  var transform = get_collider_transform(collider);
+  var new_translate = mat4();
+  mat4.translate(new_translate, new_translate, pos);
+  var new_transform = set_transform_translation(transform, new_translate);
+  set_collider_transform(collider, new_transform)
+);
+
+def set_player_position(pos: Vec3) (
+  var player = get_player(get_game());
+  var transform = get_player_transform(player);
+  var newTranslation = mat4.create();
+  mat4.translate(newTranslation, newTranslation, pos);
+  transform = set_transform_translation(transform, newTranslation);
+  set_player_transform(player, transform);
 );
 
 def collision_test(obj: Collider) (
@@ -56,61 +153,21 @@ def collision_test(obj: Collider) (
   has_collision;
 );
 
-def update() (
-  var sim_record = resolve_player_action();
-  resolve_interaction(sim_record);
-);
-
-def resolve_player_action() (
-  var cmd = get_player_cmds();
-  var simulation_record = simulate_player_cmds(cmd);
-  simulation_record;
-);
 
 # return whether move is successful and what is the new player position
 def simulate_player_move(cmd: String) (#: Bool * Vec3 (
   var target = vec3(0.0,0.0,0.0);
   camera.simulateControl(target, cmd);
-  collision_test(target), target;
-);
-
-# return whether a trigger is activated and what the trigger is
-# multiple triggers can happen during one command.
-def simulate_trigger(cmd: String) (#: Bool*(Trigger Array) (
-  if (equal(cmd,"e")) (
-    action_button = true;0;
-  )(0);
-  # check all triggers in this room
-  var all_triggers = get_all_triggers();
-  var trigger_num = length(all_triggers);
-  var activated = array{Trigger}();
-  var i = 0;
-  while (i <= (trigger_num-1)) (
-    var trigger = get(all_triggers, i);
-    var cond = get_trigger_condition(trigger)
-    if (cond()) (
-      push(activated, trigger);
-      0;
-    )(0;);
-    i = i + 1;
-  );
-  activated;
-);
-
-def set_player_position(pos: Vec3) (
-  var player = get_player(get_game());
-  var transform = get_player_transform(player);
-  var newTranslation = mat4.create();
-  mat4.translate(newTranslation, newTranslation, pos);
-  transform = set_transform_translation(transform, newTranslation);
-  set_player_transform(player, transform);
+  var player_collider = get_player_collider(get_player(get_game()));
+  var target_collider = new_collider_position(player_collider, target);
+  collision_test(target_collider), target;
 );
 
 def simulate_player_cmds(cmds: String Array) (
-  var array_len = length();
+  var array_len = length(cmds);
   var i = 0;
   var effective_cmds = array{String}();
-  var effective_triggers = array{String}();
+  var effective_triggers = array{Trigger}();
   while (i <= (array_len-1)) (
     var cmd = get(cmds, i);
     var move_record = simulate_player_move(cmd);
@@ -118,15 +175,15 @@ def simulate_player_cmds(cmds: String Array) (
       push(effective_cmds, cmd);0
     ) (0);
     var game_copy = get_game();
-    set_player_position((move_record).1) #TODO, actually should update player
+    set_player_position((move_record).1); #TODO, actually should update player
     set_game(game_copy);
     var trigger_record = simulate_trigger(cmd);
-    if ((trigger_record).0) (
-      var triggers_activated = (trigger_record).1;
-      var res_length = length(triggers_activated);
+    var num_triggers = length(trigger_record);
+    if (num_triggers >= 1) (
+      var res_length = length(trigger_record);
       var j = 0;
       while (j <= (res_length-1)) (
-        push(effective_triggers, get(triggers_activated, j));
+        push(effective_triggers, get(trigger_record, j));
         j = j+1;
       );0
     ) (0);
@@ -135,9 +192,10 @@ def simulate_player_cmds(cmds: String Array) (
   effective_cmds, effective_triggers;
 );
 
-def resolve_interaction(simulation_record: (String Array) * (Trigger Array)) (
-  resolve_movement((simulation_record).0);
-  resolve_trigger((simulation_record).1);
+var resolve_player_action = fun -> (
+  var cmd = get_player_cmds();
+  var simulation_record = simulate_player_cmds(cmd);
+  simulation_record;
 );
 
 
@@ -160,4 +218,15 @@ def resolve_trigger(triggers: (Trigger Array)) (
     var action = get_trigger_action(t);
     action();
   );
+);
+
+def resolve_interaction(simulation_record: (String Array) * (Trigger Array)) (
+  resolve_movement((simulation_record).0);
+  resolve_trigger((simulation_record).1);
+);
+
+
+var update = fun -> (
+  var sim_record = resolve_player_action();
+  resolve_interaction(sim_record);
 );
