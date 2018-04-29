@@ -13,19 +13,20 @@ extern get_player_cmds: -> (String Array) = "rt.control.get_cmds";
 
 var action_button = false;
 
-def get_all_triggers() (
-  var cur_room = get_current_room();
-  var objects = get_objects(cur_room);
+var get_all_triggers = fun -> (
+  var cur_room_name = get_current_room();
+  var cur_room = get_room(cur_room_name);
+  var objects = get_room_objects(cur_room);
   var obj_length = length(objects);
   var i = 0;
   var triggers = array{Trigger}();
   while (i <= (obj_length-1)) (
-    var obj = objects.get(i);
+    var obj = get(objects, i);
     var obj_triggers = get_object_triggers(obj);
     var trigger_length = length(obj_triggers);
     var j = 0;
     while (j <= (trigger_length-1)) (
-      triggers.push(obj_triggers.get(j));
+      push(triggers, get(obj_triggers, j));
       j = j+1;
     );
     i = i+1;
@@ -39,13 +40,14 @@ def collision_test_pair(obj1: Collider, obj2: Collider) (
 
 def collision_test(obj: Collider) (
   # test if obj collide with any colliders in this room
-  var cur_room = get_current_room();
-  var objects = get_objects(cur_room);
+  var cur_room_name = get_current_room();
+  var cur_room = get_room(cur_room_name);
+  var objects = get_room_objects(cur_room);
   var obj_length = length(objects);
   var i = 0;
   var has_collision = false;
   while (i <= (obj_length-1)) (
-    var collider = get_object_collider(objects.get(i));
+    var collider = get_object_collider(get(objects, i));
     if (collision_test_pair(obj, collider)) (
       has_collision = true;
     )(has_collision);
@@ -84,7 +86,7 @@ def simulate_trigger(cmd: String) (#: Bool*(Trigger Array) (
   var activated = array{Trigger}();
   var i = 0;
   while (i <= (trigger_num-1)) (
-    var trigger = all_triggers.get(i);
+    var trigger = get(all_triggers, i);
     var cond = get_trigger_condition(trigger)
     if (cond()) (
       activated.push(trigger);0
@@ -123,7 +125,7 @@ def simulate_player_cmds(cmds: String Array) (
       var res_length = length(triggers_activated);
       var j = 0;
       while (j <= (res_length-1)) (
-        push(effective_triggers, triggers_activated.get(j));
+        push(effective_triggers, get(triggers_activated, j));
         j = j+1;
       );0
     ) (0);
@@ -142,7 +144,7 @@ def resolve_movement(cmd: (String Array)) (
   var cmd_length = length(cmd);
   var i = 0;
   while (i <= (cmd_length-1)) (
-    var c = cmd.get(i);
+    var c = get(cmd, i);
     camera.update(c);
     i = i+1;
   );
@@ -153,7 +155,7 @@ def resolve_trigger(triggers: (Trigger Array)) (
   var trigger_length = length(triggers);
   var i = 0;
   while (i <= (trigger_length-1)) (
-    var t = triggers.get(i);
+    var t = get(triggers, i);
     var action = get_trigger_action(t);
     action();
   );

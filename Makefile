@@ -7,6 +7,7 @@ example.bundle.js: build/example.js
 
 
 test.braid: data.braid game_state.braid game_engine.braid
+	rm -f test.braid
 	cat node_modules/braid-glrt/preamble.braid data.braid game_state.braid game_engine.braid > test.braid
 
 engine: test.braid
