@@ -5,7 +5,9 @@
         "outDir": "build",
         "module": "commonjs",
         "allowJs": true,
+        "target": "es6",
         "lib": ["dom", "es2015"],
+        "sourceMap": true,
         "plugins": [
             { "name": "tslint-language-service" }
         ]
