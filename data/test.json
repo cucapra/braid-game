@@ -1,11 +1,12 @@
 {
+  "start_room": "room1",
   "rooms": [
     {
       "lights": [
           {
             "color":[1.0,0.8,0.6],
             "position":[25.0,48.0,-25.0],
-            "intensity":
+            "intensity":1
           }
       ],
       "objects": {
@@ -34,7 +35,7 @@
           "triggers": [
             {
               "interaction": "Touch",
-              "action": "InventoryAdd",
+              "action": "InventoryAdd", // InventoryAdd.braid -> InvecntoryAdd
               "target": "teabag"
             }
           ],
