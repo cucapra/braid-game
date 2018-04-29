@@ -1,4 +1,4 @@
-type Transform = Mat4 * Mat4 * Mat4 * Mat4 * Mat4; # Translation * Rx * Ry * Rx * Scale
+type Transform = Mat4 * Mat4 * Mat4 * Mat4 * Mat4; # Translation * Rx * Ry * Rz * Scale
 # Collider = name * parameter * transform
 # default: sphere: center at 0,0,0
 # default: plane: center at 0,0,0, normal at 1,0,0, up at 0,1,0
