@@ -1,5 +1,3 @@
-extern throw: String -> Int = "throw";
-
 type Transform = Mat4 * Mat4 * Mat4 * Mat4 * Mat4; # Translation * Rx * Ry * Rx * Scale
 # Collider = name * parameter * transform
 # default: sphere: center at 0,0,0
@@ -120,7 +118,7 @@ var get_room = fun name: String -> (
         i = i + 1;
     );
     if (room_picked == (-1)) (
-        throw("cannot find a room");
+        1/0;
     ) (0;);
     get(rooms, room_picked)
 );
@@ -163,7 +161,7 @@ var get_room_object = fun room: Room name: String -> (
         i = i + 1;
     );
     if (object_picked == (-1)) (
-        throw("cannot find an object");
+        1/0;
     ) (0;);
     get(objects, object_picked);
 );

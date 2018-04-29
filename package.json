@@ -12,8 +12,8 @@
   "devDependencies": {
     "@types/gl-matrix": "^2.4.0",
     "@types/jquery": "^3.3.0",
+    "braid-lang": "latest",
     "typescript": "^2.7.1",
-    "webpack": "^3.10.0",
-    "braid-lang": "latest"
+    "webpack": "^3.10.0"
   }
 }
