@@ -3,21 +3,42 @@
   "rooms": [
     {
       "lights": [
-          {
-            "color":[1.0,0.8,0.6],
-            "position":[25.0,48.0,-25.0],
-            "intensity":1
-          }
+        {
+          "color": [
+            1.0,
+            0.8,
+            0.6
+          ],
+          "position": [
+            25.0,
+            48.0,
+            -25.0
+          ],
+          "intensity": 1
+        }
       ],
       "objects": {
-          "teapot" :
-          {
-          "position": [12.0,15.0,-15.0],
-          "localTransformT": [0.0,0.0,0.0],
-          "localTransformRx": 0.0,
-          "localTransformRy": 1.4,
-          "localTransformRz": 0.0,
-          "localTransformS": [1.5,1.5,1.5],
+        "teapot": {
+          "position": [
+            12.0,
+            15.0,
+            -15.0
+          ],
+          "local_transform": {
+            "translation": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rotationX": 0.0,
+            "rotationY": 1.4,
+            "rotationZ": 0.0,
+            "scale": [
+              1.5,
+              1.5,
+              1.5
+            ]
+          },
           "render_obj": {
             "mesh": "teapot.obj",
             "texture": "wood1.png",
@@ -25,26 +46,101 @@
           },
           "collider": {
             "name": "sphere",
-            "radius": 3.0
+            "param": [
+              1,
+              1
+            ],
+            "transform": {
+              "translation": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "rotationX": 0.0,
+              "rotationY": 1.4,
+              "rotationZ": 0.0,
+              "scale": [
+                1.5,
+                1.5,
+                1.5
+              ]
+            }
           },
-          "colliderT": [0.0,0.0,0.0],
-          "colliderRx": 0.0,
-          "colliderRy": 1.4,
-          "colliderRz": 0.0,
-          "colliderS": 1.5,
-          "triggers": [
+          "lights": [
             {
-              "interaction": "Touch",
-              "action": "InventoryAdd", // InventoryAdd.braid -> InvecntoryAdd
-              "target": "teabag"
+              "color": [
+                0.5,
+                0.5,
+                0.5
+              ],
+              "position": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "intensity": 5
             }
           ],
-          "light": {
-            "color": [0.5,0.5,0.5],
-            "position": [0.0,0.0,0.0]
-          }
+          "triggers": [
+            {
+              "name": "touch",
+              "filename": "touch.braid",
+              "condition": "touch_cond",
+              "action": "touch_act"
+            }
+          ]
         }
       }
     }
-  ]
+  ],
+  "player": {
+    "name": "andrew",
+    "collider": {
+      "name": "sphere",
+      "param": [
+        1,
+        1
+      ],
+      "transform": {
+        "translation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotationX": 0.0,
+        "rotationY": 1.4,
+        "rotationZ": 0.0,
+        "scale": [
+          1.5,
+          1.5,
+          1.5
+        ]
+      }
+    },
+    "inventories": [
+      "apple",
+      "banana"
+    ],
+    "height": 0.5,
+    "render_obj": {
+      "mesh": "teapot.obj",
+      "texture": "wood1.png",
+      "shader": "phong"
+    },
+    "transform": {
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotationX": 0.0,
+      "rotationY": 0.0,
+      "rotationZ": 0.0,
+      "scale": [
+        1.5,
+        1.5,
+        1.5
+      ]
+    }
+  }
 }
