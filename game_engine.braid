@@ -87,8 +87,9 @@ def simulate_trigger(cmd: String) (#: Bool*(Trigger Array) (
     var trigger = all_triggers.get(i);
     var cond = get_trigger_condition(trigger)
     if (cond()) (
-      activated.push(trigger);0
-    )(0);
+      push(activated, trigger);
+      0;
+    )(0;);
     i = i + 1;
   );
   activated;
