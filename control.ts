@@ -45,4 +45,8 @@ export class Control {
       return this.isControlOn(dir);
     }
 
+    get_cmds = () => {
+      return this.control_names.filter(this.isOn);
+    }
+
 }

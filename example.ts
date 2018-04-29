@@ -46,7 +46,7 @@ function example(canvas: HTMLCanvasElement, assets: Assets) {
 
     // Invoke the compiled Braid code.
     braid_render.proc.apply(void 0, braid_render.env);
-
+    console.log("new frame");
     // Ask to be run again.
     window.requestAnimationFrame(render);
   }
@@ -65,7 +65,7 @@ function load_assets_and_run(canvas: HTMLCanvasElement, to_load: Array<string>) 
 document.addEventListener("DOMContentLoaded", () => {
   let canvas = document.getElementsByTagName("canvas")[0];
   console.log("done loading");
-  load_assets_and_run(canvas, ["teapot.obj", "wood1.png", "skyBox.obj", "wall.obj", "posx.jpg", "posx.jpg", "negx.jpg", "posy.jpg",
+  load_assets_and_run(canvas, ["teapot.obj", "wood1.png", "room.obj", "wall.obj", "posx.jpg", "posx.jpg", "negx.jpg", "posy.jpg",
   "negy.jpg", "posz.jpg", "negz.jpg"]);
 });
 
