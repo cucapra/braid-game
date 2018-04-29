@@ -115,15 +115,15 @@ function compile_transform(trans: Transform) {
 }
 
 function compile_render_object(obj: RenderObject) {
-    return `(load_obj(${obj.mesh}), load_texture(${obj.texture}), "${obj.shader}")`;
+    return `(load_obj("${obj.mesh}"), load_texture("${obj.texture}"), "${obj.shader}")`;
 }
 
 function compile_collider(c: Collider) {
-    return create_tuple([c.name, compile_vec(c.param), compile_transform(c.transform)]);
+    return create_tuple([`"${c.name}"`, compile_vec(c.param), compile_transform(c.transform)]);
 }
 
 function compile_object(o: GameObject) {
-    const name = o.name;
+    const name = `"${o.name}"`;
     const position = compile_vec(o.position);
     const l_trans = compile_transform(o.local_transform);
     const r_obj = compile_render_object(o.render_obj);
@@ -136,20 +136,20 @@ function compile_object(o: GameObject) {
 }
 
 function compile_room(r: Room) {
-    const name = r.name;
+    const name = `"${r.name}"`;
     const lights = `array{Light}${create_newline_tuple(r.lights.map(compile_light))}`;
     const objects = `array{Object}${create_newline_tuple(r.objects.map(compile_object))}`;
     const size = compile_vec(r.size);
-    const texture = `load_texture(${r.texture})`;
+    const texture = `load_texture("${r.texture}")`;
     const sp = compile_vec(r.start_position);
     const sd = compile_vec(r.start_direction);
     return create_newline_tuple([name, lights, objects, size, texture, sp, sd]);
 }
 
 function compile_player(p: Player) {
-    const name = p.name;
+    const name = `"${p.name}"`;
     const collider = compile_collider(p.collider);
-    const invs = `array{Inventory}${create_tuple(p.inventories)}`;
+    const invs = `array{Inventory}${create_tuple(p.inventories.map(e => `"${e}"`))}`;
     const height = format_num(p.height);
     const ro = compile_render_object(p.render_obj);
     const trans = compile_transform(p.transform);
@@ -157,13 +157,12 @@ function compile_player(p: Player) {
 }
 
 function compile_game(g: Game) {
-    return create_newline_tuple([g.starting_room, `array{Room}${create_newline_tuple(g.rooms.map(compile_room))}`, compile_player(g.player)]);
+    return create_newline_tuple([`"${g.starting_room}"`, `array{Room}${create_newline_tuple(g.rooms.map(compile_room))}`, compile_player(g.player)]);
 }
 
 export function compile(filename: string) {
-    let data = require("./data/" + filename);
-    const d: Transform = data;
-    return d;
+    let game: Game = require("../data/" + filename);
+    return compile_game(game);
 }
 
 console.log(123);
