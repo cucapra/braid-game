@@ -1,7 +1,8 @@
 {
-  "start_room": "room1",
+  "starting_room": "room1",
   "rooms": [
     {
+      "name": "room1",
       "lights": [
         {
           "color": [
@@ -17,8 +18,9 @@
           "intensity": 1
         }
       ],
-      "objects": {
-        "teapot": {
+      "objects": [
+        {
+          "name": "teapot",
           "position": [
             12.0,
             15.0,
@@ -90,7 +92,11 @@
             }
           ]
         }
-      }
+      ],
+      "size": [20.0, 6.0, 20.0],
+      "texture": "wood1.png",
+      "start_position": [0.0, 0.0],
+      "start_direction": [0.0, 0.0, 1.0]
     }
   ],
   "player": {
