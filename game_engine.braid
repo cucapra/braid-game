@@ -179,14 +179,11 @@ def simulate_player_cmds(cmds: String Array) (
     set_game(game_copy);
     var trigger_record = simulate_trigger(cmd);
     var num_triggers = length(trigger_record);
-    if (num_triggers >= 1) (
-      var res_length = length(trigger_record);
-      var j = 0;
-      while (j <= (res_length-1)) (
-        push(effective_triggers, get(trigger_record, j));
-        j = j+1;
-      );0
-    ) (0);
+    var j = 0;
+    while (j <= (num_triggers-1)) (
+      push(effective_triggers, get(trigger_record, j));
+      j = j+1;
+    );
     i = i + 1;
   );
   effective_cmds, effective_triggers;
