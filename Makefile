@@ -1,6 +1,6 @@
 GENERATED := examples.bundle.js render.js
 
-.PHONY: clean, engine, build
+.PHONY: clean, engine, parser
 
 example.bundle.js: build/example.js
 	yarn run webpack
@@ -19,7 +19,7 @@ render.js: sim.braid render.braid
 build/example.js: $(wildcard *.ts) render.js
 	yarn run tsc
 
-build: $(wildcard *.ts)
+parser: $(wildcard *.ts)
 	yarn run tsc --p tsdataconfig.json
 
 clean:
