@@ -1,14 +1,3 @@
-extern camera.update : String -> Void = "rt.camera.updateCam";
-extern camera.getViewMatrix : Mat4 -> Void = "rt.camera.getViewM";
-extern camera.getProjMatrix : Mat4 Float Float -> Void = "rt.camera.getProjM";
-extern camera.simulateControl : Float3 String -> Void = "rt.camera.simCtrl";
-extern control.isOn : String -> Bool = "rt.control.isOn";
-extern control.control_names : String Array = "rt.control.control_names";
-extern print : Any -> Void = "console.log";
-extern vec4.transformMat4 : Float4 Float4 Mat4 -> Void;
-extern rt.drawWidth: Float;
-extern rt.drawHeight: Float;
-
 #create room mesh
 
 var room_mesh = load_obj("room.obj");

@@ -15,6 +15,6 @@
     },
 
     "files": [
-        "example.ts",
+        "data_parser.ts"
     ]
 }

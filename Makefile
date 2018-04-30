@@ -1,12 +1,12 @@
 GENERATED := examples.bundle.js render.js
 
-.PHONY: clean, engine
+.PHONY: clean, engine, build
 
 example.bundle.js: build/example.js
 	yarn run webpack
 
 
-sim.braid: data.braid game_state.braid game_engine.braid 
+sim.braid: game_preamble.braid data.braid game_state.braid game_engine.braid
 	rm -f sim.braid
 	cat node_modules/braid-glrt/preamble.braid $^ > sim.braid
 
@@ -18,6 +18,9 @@ render.js: sim.braid render.braid
 
 build/example.js: $(wildcard *.ts) render.js
 	yarn run tsc
+
+build: $(wildcard *.ts)
+	yarn run tsc --p tsdataconfig.json
 
 clean:
 	rm -rf build/ node_modules/ $(GENERATED)

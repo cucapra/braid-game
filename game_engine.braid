@@ -1,16 +1,3 @@
-extern camera.update : String -> Void = "rt.camera.updateCam";
-extern camera.getViewMatrix : Mat4 -> Void = "rt.camera.getViewM";
-extern camera.getProjMatrix : Mat4 Float Float -> Void = "rt.camera.getProjM";
-extern camera.simulateControl : Float3 String -> Void = "rt.camera.simCtrl";
-extern camera.getEye : -> Float3 = "rt.camera.getEyePos";
-extern control.isOn : String -> Bool = "rt.control.isOn";
-extern control.control_names : String Array = "rt.control.control_names";
-extern print : Any -> Void = "console.log";
-extern vec4.transformMat4 : Float4 Float4 Mat4 -> Void;
-extern rt.drawWidth: Float;
-extern rt.drawHeight: Float;
-extern get_player_cmds: -> (String Array) = "rt.control.get_cmds";
-
 var action_button = false;
 
 var get_transform_matrix = fun trans: Transform -> (

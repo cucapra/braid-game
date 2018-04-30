@@ -1,6 +1,3 @@
-type GameObj = Float3 * Float; # a spherical bounding box
-type Plane = Float3 * Float3; # origin and normal, normal points *inside*
-
 ############################ obj ############################
 
 def make_object (pos: Float3, radius: Float) (

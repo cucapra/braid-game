@@ -1,1 +1,35 @@
-extern get_light_positions: Int -> (Float3 Array) = "rt.gdrt.get_light_positions";
+type Transform = Mat4 * Mat4 * Mat4 * Mat4 * Mat4; # Translation * Rx * Ry * Rz * Scale
+# Collider = name * parameter * transform
+# default: sphere: center at 0,0,0
+# default: plane: center at 0,0,0, normal at 1,0,0, up at 0,1,0
+type Collider = String * Float2 * Transform; # TODO: how to define isCollision function here
+type Shader = String;
+type RenderObject = Mesh * Texture * Shader;
+type Light = Vec3 * Vec3 * Float; # Color * Position * Intensity
+type Trigger = String * ( -> Bool) * ( -> Void); # name * condition * action
+# Object = name * position * local_transform * render_obj * * collider * light array * triggers
+type Object = String * Vec3 * Transform * RenderObject * Collider * (Light Array) * (Trigger Array);
+type Inventory = String;
+# Player = Room * Collider * Inventory Array * Height * RenderObject * Transform
+type Player = String * Collider * (Inventory Array) * Float * RenderObject * Transform;
+# Room = Name * Lights * Objects * size * texture * start_position * start_direction
+type Room = String * (Light Array) * (Object Array) * Vec3 * Texture * Vec2 * Vec3;
+# Game = starting_room * (Room Array * Player)
+type Game = String * (Room Array) * Player;
+
+
+extern camera.update : String -> Void = "rt.camera.updateCam";
+extern camera.getViewMatrix : Mat4 -> Void = "rt.camera.getViewM";
+extern camera.getProjMatrix : Mat4 Float Float -> Void = "rt.camera.getProjM";
+extern camera.simulateControl : Float3 String -> Void = "rt.camera.simCtrl";
+extern camera.getEye : -> Float3 = "rt.camera.getEyePos";
+extern control.isOn : String -> Bool = "rt.control.isOn";
+extern control.control_names : String Array = "rt.control.control_names";
+extern print : Any -> Void = "console.log";
+extern vec4.transformMat4 : Float4 Float4 Mat4 -> Void;
+extern rt.drawWidth: Float;
+extern rt.drawHeight: Float;
+extern get_player_cmds: -> (String Array) = "rt.control.get_cmds";
+
+type GameObj = Float3 * Float; # a spherical bounding box
+type Plane = Float3 * Float3; # origin and normal, normal points *inside*

@@ -1,22 +1,3 @@
-type Transform = Mat4 * Mat4 * Mat4 * Mat4 * Mat4; # Translation * Rx * Ry * Rz * Scale
-# Collider = name * parameter * transform
-# default: sphere: center at 0,0,0
-# default: plane: center at 0,0,0, normal at 1,0,0, up at 0,1,0
-type Collider = String * Float2 * Transform; # TODO: how to define isCollision function here
-type Shader = String;
-type RenderObject = Mesh * Texture * Shader;
-type Light = Vec3 * Vec3 * Float; # Color * Position * Intensity
-type Trigger = String * ( -> Bool) * ( -> Void); # name * condition * action
-# Object = name * position * local_transform * render_obj * * collider * light array * triggers
-type Object = String * Vec3 * Transform * RenderObject * Collider * (Light Array) * (Trigger Array);
-type Inventory = String;
-# Player = Room * Collider * Inventory Array * Height * RenderObject * Transform
-type Player = String * Collider * (Inventory Array) * Float * RenderObject * Transform;
-# Room = Name * Lights * Objects * size * texture * start_position * start_direction
-type Room = String * (Light Array) * (Object Array) * Vec3 * Texture * Vec2 * Vec3;
-# Game = starting_room * (Room Array * Player)
-type Game = String * (Room Array) * Player;
-
 var __translate = mat4.create();
 var __rotateX = mat4.create();
 var __rotateY = mat4.create();
@@ -26,7 +7,7 @@ mat4.translate(__translate, __translate, vec3(0.0, 0.0, 0.0));
 mat4.rotateX(__rotateX, __rotateX, 0.0);
 mat4.rotateY(__rotateY, __rotateY, 0.0);
 mat4.rotateZ(__rotateZ, __rotateZ, 0.0);
-mat4.scale(__scale, __scale, vec3(0.03, 0.03, 0.03));
+mat4.scale(__scale, __scale, vec3(0.01, 0.01, 0.01));
 
 var __identity = (
     __translate,
@@ -40,7 +21,7 @@ var teapot = load_obj("teapot.obj");
 
 var __wood = load_texture("wood1.png");
 
-var __game = (
+var game_init = (
     "room1",
     # Room
     array(
@@ -95,16 +76,18 @@ var __game = (
     )
 );
 
+var __game = array(game_init);
+
 var get_game = fun -> (
-    __game
+    get(__game, 0);
 );
 
 var get_current_room = fun -> (
-    (__game).0
+    (get_game()).0
 );
 
 var get_rooms = fun -> (
-    (__game).1
+    (get_game()).1
 );
 
 var get_room = fun name: String -> (
@@ -308,15 +291,15 @@ var get_room_start_direction = fun room : Room -> (
 ####################################################
 
 var set_game = fun game: Game -> (
-    __game = game;
+    set(__game, 0, game);
 );
 
 var set_current_room = fun name: String -> (
-    __game = name, get_rooms(), get_player(__game);
+    set_game((name, get_rooms(), get_player(get_game())));
 );
 
 var set_rooms = fun rooms: (Room Array) -> (
-    __game = get_current_room(), rooms, get_player(__game);
+    set_game((get_current_room(), rooms, get_player(get_game())));
 );
 
 var set_room = fun name: String room: Room -> (
@@ -480,7 +463,7 @@ var set_trigger_action = fun trigger:Trigger action: (-> Void) -> (
 );
 
 var set_player = fun game: Game player: Player -> (
-    __game = ((game).0), ((game).1), player;
+    set_game((((game).0), ((game).1), player));
 );
 
 var set_player_name = fun player : Player name: String -> (
