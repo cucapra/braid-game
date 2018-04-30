@@ -1,4 +1,10 @@
 import { mat4, vec3 } from 'gl-matrix';
+import * as fs from 'fs';
+import { EOL } from 'os';
+import * as util from 'util';
+import * as path from 'path';
+import * as minimist from 'minimist';
+
 // hacks that I will forgot why it worked:
 // json files are treated as modules and loaded using imports
 // then parsed into game data
@@ -75,7 +81,7 @@ interface Game {
     player: Player;
 }
 
-const newline = "\n";
+const newline = EOL;
 
 const format_num = new Intl.NumberFormat('en-US', { minimumFractionDigits: 1 }).format;
 
@@ -160,10 +166,53 @@ function compile_game(g: Game) {
     return create_newline_tuple([`"${g.starting_room}"`, `array{Room}${create_newline_tuple(g.rooms.map(compile_room))}`, compile_player(g.player)]);
 }
 
-export function compile(filename: string) {
-    let game: Game = require("../data/" + filename);
-    return compile_game(game);
+function compile_trigger(t: Trigger) {
+    return create_tuple([`"${t.name}"`, t.condition, t.action]);
 }
 
-console.log(123);
-console.log(compile("test.json"));
+function compile(input: string, output?: string) {
+    const data_dir = path.dirname(input) + '/';
+    const filename = path.basename(input);
+    const readFile = util.promisify(fs.readFile);
+    const decl: string[] = [];
+    const init: string[] = [];
+    const code: string[] = [];
+    const promises: Promise<void>[] = [];
+    readFile(data_dir + filename).then(e => {
+        return compile_game(JSON.parse(e.toString()));
+    }).then(data => {
+        triggers_map.forEach((triggers, name) => {
+            decl.push(`var ${name} = array{Trigger}();`);
+            triggers.forEach(trigger => {
+                const p = readFile(data_dir + trigger.filename).then(data => {
+                    code.push(data.toString());
+                    init.push(`push(${name}, ${compile_trigger(trigger)};`);
+                }).catch(err => {
+                    throw new Error(err);
+                });
+                promises.push(p);
+            });
+        });
+        return data;
+    }).then(data => Promise.all(promises).then(() => {
+        return [decl.join(newline), data, code, init].join(newline);
+    })).then(content => {
+        const writeFile = util.promisify(fs.writeFile);
+        const outputFile = output ? output : `${data_dir}${path.parse(filename).name}.braid`;
+        writeFile(outputFile, content);
+    });
+}
+
+async function main() {
+    let args = minimist(process.argv.slice(2), {
+        string: ['o'],
+        boolean: ['h']
+    });
+    let filenames: string[] = args._;
+    if (args['h'] || filenames.length !== 1) {
+        console.log(`Usage: ${process.argv[1]} <filename> [-o <filename>]`);
+        process.exit(0);
+    }
+    compile(filenames[0], args['o']);
+}
+main();

@@ -4,6 +4,7 @@
         "noImplicitReturns": true,
         "outDir": "build",
         "module": "commonjs",
+        "types" : ["node"],
         "allowJs": true,
         "target": "es6",
         "lib": ["dom", "es2015"],
@@ -14,6 +15,7 @@
     },
     
     "files": [
-        "example.ts"
+        "example.ts",
+        "data_parser.ts"
     ]
 }
