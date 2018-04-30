@@ -4,14 +4,18 @@
         "noImplicitReturns": true,
         "outDir": "build",
         "module": "commonjs",
+        "types" : ["node"],
         "allowJs": true,
+        "target": "es6",
         "lib": ["dom", "es2015"],
+        "sourceMap": true,
         "plugins": [
             { "name": "tslint-language-service" }
         ]
     },
     
     "files": [
-        "example.ts"
+        "example.ts",
+        "data_parser.ts"
     ]
 }

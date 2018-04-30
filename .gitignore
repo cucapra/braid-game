@@ -1,3 +1,5 @@
+.vscode
+sim.braid
 build
 node_modules
 example.bundle.js

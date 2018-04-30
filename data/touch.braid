@@ -1,0 +1,6 @@
+var touch_cond = fun -> (
+    true
+);
+var touch_act = fun -> (
+    var a = 1;
+);
