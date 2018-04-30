@@ -166,7 +166,7 @@ export class PerspCamera {
     }
     // Needed to make interop work.
     updateCam = (ctrl: string) => {
-        return this.update(ctrl);
+        this.update(ctrl);
     }
 
     getViewM = (out: mat4) => {

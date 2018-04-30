@@ -9,8 +9,8 @@ import { Control } from './control';
 // import * as data_runtime from "./game_data";
 
 function getCamera() {
-    let eye = vec3.fromValues(20, 15, -10);
-    let target = vec3.fromValues(10, 15, -20);
+    let eye = vec3.fromValues(-10.0, 2.5, 0.0);
+    let target = vec3.fromValues(0.0, 2.5, 5.0);
     let up = vec3.fromValues(0, 1, 0);
     let camera = new PerspCamera(eye, target, up, 0.01, 1000);
     return camera;
@@ -46,7 +46,6 @@ function example(canvas: HTMLCanvasElement, assets: Assets) {
 
     // Invoke the compiled Braid code.
     braid_render.proc.apply(void 0, braid_render.env);
-    console.log("new frame");
     // Ask to be run again.
     window.requestAnimationFrame(render);
   }

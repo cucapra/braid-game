@@ -13,6 +13,15 @@ extern get_player_cmds: -> (String Array) = "rt.control.get_cmds";
 
 var action_button = false;
 
+var get_transform_matrix = fun trans: Transform -> (
+  var t = get_transform_translation(trans);
+  var rx = get_transform_rotationX(trans);
+  var ry = get_transform_rotationY(trans);
+  var rz = get_transform_rotationZ(trans);
+  var s = get_transform_scale(trans);
+  t*rx*ry*rz*s
+);
+
 var get_all_triggers = fun -> (
   var cur_room_name = get_current_room();
   var cur_room = get_room(cur_room_name);
@@ -130,9 +139,26 @@ def set_player_position(pos: Vec3) (
   var player = get_player(get_game());
   var transform = get_player_transform(player);
   var newTranslation = mat4.create();
-  mat4.translate(newTranslation, newTranslation, pos);
+  mat4.fromTranslation(newTranslation, pos);
+  print("translation vec and matrix");
+  print(pos);
+  print(newTranslation);
   transform = set_transform_translation(transform, newTranslation);
+  var ttt = get_transform_translation(transform);
   set_player_transform(player, transform);
+  var ttf = get_player_transform(player);
+  var tttt = get_transform_translation(ttf);
+  print("before");
+  print(ttt);
+  print("after");
+  print(tttt);
+);
+
+var get_player_position = fun -> (
+  var player = get_player(get_game());
+  var transform = get_player_transform(player);
+  var m = get_transform_matrix(transform);
+  m * vec4(0.0,0.0,0.0,1.0);
 );
 
 def collision_test(obj: Collider) (
@@ -171,7 +197,7 @@ def simulate_player_cmds(cmds: String Array) (
   while (i <= (array_len-1)) (
     var cmd = get(cmds, i);
     var move_record = simulate_player_move(cmd);
-    if ((move_record).0) (
+    if (~((move_record).0)) (
       push(effective_cmds, cmd);0
     ) (0);
     var game_copy = get_game();
@@ -205,6 +231,7 @@ def resolve_movement(cmd: (String Array)) (
     i = i+1;
   );
   set_player_position(camera.getEye());
+  print(get_player_position());
 );
 
 def resolve_trigger(triggers: (Trigger Array)) (

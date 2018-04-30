@@ -9,15 +9,6 @@ extern vec4.transformMat4 : Float4 Float4 Mat4 -> Void;
 extern rt.drawWidth: Float;
 extern rt.drawHeight: Float;
 
-var get_transform_matrix = fun trans: Transform -> (
-  var t = get_transform_translation(trans);
-  var rx = get_transform_rotationX(trans);
-  var ry = get_transform_rotationY(trans);
-  var rz = get_transform_rotationZ(trans);
-  var s = get_transform_scale(trans);
-  t*rx*ry*rz*s;
-);
-
 #create room mesh
 
 var room_mesh = load_obj("room.obj");
@@ -129,6 +120,7 @@ var draw_room = fun lights: (Light Array) -> (
   mat4.scale(scale, scale, size);
   simple_shader(room_position, room_normal, scale, room_texcoord,
     (l).0, (l).1, room_tex, 1.0, vec3(0.0,0.0,0.0));
+  draw_mesh(room_indices, room_size);
 );
 
 def draw_object(obj_pos: Vec3, obj_transform: Transform, obj_mesh: Mesh,
@@ -146,6 +138,7 @@ def draw_object(obj_pos: Vec3, obj_transform: Transform, obj_mesh: Mesh,
     var obj_texcoord = mesh_texcoords(obj_mesh);
     simple_shader(obj_position, obj_normal, obj_t, obj_texcoord,
       (l).0, (l).1, obj_tex, 1.0, vec3(0.0,0.0,0.0));
+    draw_mesh(obj_indices, obj_size);
 );
 
 var draw_objects = fun lights: (Light Array) -> (
@@ -161,6 +154,7 @@ var draw_objects = fun lights: (Light Array) -> (
     var obj_tex = get_render_object_texture(obj_render);
     var obj_shader = get_render_object_shader(obj_render);
     draw_object(obj_pos, obj_transform, obj_mesh, obj_tex, obj_shader, lights);
+    obj_i = obj_i + 1;
   );
 );
 
@@ -183,6 +177,8 @@ var draw_scene = fun -> (
 
 render js<
   update();
+  camera.getViewMatrix(viewMatrix);
+  camera.getProjMatrix(projection, rt.drawWidth, rt.drawHeight);
   #draw
   draw_scene();
 >
