@@ -20,7 +20,7 @@ build/example.js: $(wildcard *.ts) render.js
 	yarn run tsc
 
 parser: $(wildcard *.ts)
-	yarn run tsc --p tsdataconfig.json
+	yarn run tsc --p data_tsconfig.json
 
 clean:
 	rm -rf build/ node_modules/ $(GENERATED)
