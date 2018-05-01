@@ -19,8 +19,8 @@
     "typescript": "^2.7.1",
     "webpack": "^3.10.0"
   }, "bin": {
-    "compile-data": "build/data_parser.js"
+    "compile-data": "build/data_compiler.js"
   }, "scripts": {
-    "compile-data": "node build/data_parser.js"
+    "compile-data": "node build/data_compiler.js"
   }
 }

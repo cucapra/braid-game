@@ -1,3 +1,8 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Game preamble files include type decalration and extern functions.          
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 type Transform = Mat4 * Mat4 * Mat4 * Mat4 * Mat4; # Translation * Rx * Ry * Rz * Scale
 # Collider = name * parameter * transform
 # default: sphere: center at 0,0,0
@@ -17,6 +22,8 @@ type Room = String * (Light Array) * (Object Array) * Vec3 * Texture * Vec2 * Ve
 # Game = starting_room * (Room Array * Player)
 type Game = String * (Room Array) * Player;
 
+type GameObj = Float3 * Float; # a spherical bounding box
+type Plane = Float3 * Float3; # origin and normal, normal points *inside*
 
 extern camera.update : String -> Void = "rt.camera.updateCam";
 extern camera.getViewMatrix : Mat4 -> Void = "rt.camera.getViewM";
@@ -30,6 +37,3 @@ extern vec4.transformMat4 : Float4 Float4 Mat4 -> Void;
 extern rt.drawWidth: Float;
 extern rt.drawHeight: Float;
 extern get_player_cmds: -> (String Array) = "rt.control.get_cmds";
-
-type GameObj = Float3 * Float; # a spherical bounding box
-type Plane = Float3 * Float3; # origin and normal, normal points *inside*

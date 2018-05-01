@@ -178,7 +178,7 @@ function compile(input: string, output?: string) {
     const init: string[] = [];
     const code: string[] = [];
     const promises: Promise<void>[] = [];
-    readFile(data_dir + filename).then(e => {
+    const compile_data = readFile(data_dir + filename).then(e => {
         return compile_game(JSON.parse(e.toString()));
     }).then(data => {
         triggers_map.forEach((triggers, name) => {
@@ -186,7 +186,7 @@ function compile(input: string, output?: string) {
             triggers.forEach(trigger => {
                 const p = readFile(data_dir + trigger.filename).then(data => {
                     code.push(data.toString());
-                    init.push(`push(${name}, ${compile_trigger(trigger)};`);
+                    init.push(`push(${name}, ${compile_trigger(trigger)});`);
                 }).catch(err => {
                     throw new Error(err);
                 });
@@ -195,10 +195,17 @@ function compile(input: string, output?: string) {
         });
         return data;
     }).then(data => Promise.all(promises).then(() => {
-        return [decl.join(newline), data, code, init].join(newline);
-    })).then(content => {
+        return [
+            [decl.join(newline), `var __game_init = ${data};`].join(newline),
+            code + newline + init
+        ];
+    }));
+    Promise.all([compile_data, readFile("game_preamble.braid"), readFile("data_accessor.braid")])
+    .then(e => {
+        const [[game, trigger], preamble, data] = e;
         const writeFile = util.promisify(fs.writeFile);
         const outputFile = output ? output : `${data_dir}${path.parse(filename).name}.braid`;
+        const content = [preamble, game, data, trigger].join(newline + newline) + newline;
         writeFile(outputFile, content);
     });
 }

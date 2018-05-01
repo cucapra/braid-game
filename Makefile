@@ -5,8 +5,10 @@ GENERATED := examples.bundle.js render.js
 example.bundle.js: build/example.js
 	yarn run webpack
 
+data/data.braid: parser
+	yarn run compile-data data/data.json
 
-sim.braid: game_preamble.braid data.braid game_state.braid game_engine.braid
+sim.braid: data/data.braid game_state.braid game_engine.braid
 	rm -f sim.braid
 	cat node_modules/braid-glrt/preamble.braid $^ > sim.braid
 
@@ -20,7 +22,7 @@ build/example.js: $(wildcard *.ts) render.js
 	yarn run tsc
 
 parser: $(wildcard *.ts)
-	yarn run tsc --p data_tsconfig.json
+	yarn run tsc --p data_compiler_tsconfig.json
 
 clean:
 	rm -rf build/ node_modules/ $(GENERATED)
