@@ -37,3 +37,4 @@ extern vec4.transformMat4 : Float4 Float4 Mat4 -> Void;
 extern rt.drawWidth: Float;
 extern rt.drawHeight: Float;
 extern get_player_cmds: -> (String Array) = "rt.control.get_cmds";
+extern noop: -> Void = "rt.noop";

@@ -3,4 +3,5 @@ var touch_cond = fun -> (
 );
 var touch_act = fun -> (
     var a = 1;
+    noop()
 );

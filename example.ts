@@ -30,6 +30,7 @@ function example(canvas: HTMLCanvasElement, assets: Assets) {
 
   (rt as any).camera = camera;
   (rt as any).control = control;
+  (rt as any).noop = () => {};
   // (rt as any).gdrt = gdrt;
   // Get the compiled Braid code's render function.
   let braid_render = braid_func(rt);
