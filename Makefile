@@ -10,7 +10,7 @@ data/data.braid: parser
 
 sim.braid: data/data.braid game_state.braid game_engine.braid
 	rm -f sim.braid
-	cat node_modules/braid-glrt/preamble.braid $^ > sim.braid
+	cat preamble.braid $^ > sim.braid
 
 engine: sim.braid render.braid
 	cat sim.braid render.braid | braid -cmw
@@ -21,7 +21,7 @@ render.js: sim.braid render.braid
 build/example.js: $(wildcard *.ts) render.js
 	yarn run tsc
 
-parser: $(wildcard *.ts)
+parser: data_compiler.ts build/data_compiler.js
 	yarn run tsc --p data_compiler_tsconfig.json
 
 clean:
