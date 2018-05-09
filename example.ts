@@ -9,7 +9,7 @@ import { Control } from './control';
 // import * as data_runtime from "./game_data";
 
 function getCamera() {
-    let eye = vec3.fromValues(-10.0, 2.5, 0.0);
+    let eye = vec3.fromValues(-10.0, 4.5, 0.0);
     let target = vec3.fromValues(0.0, 2.5, 5.0);
     let up = vec3.fromValues(0, 1, 0);
     let camera = new PerspCamera(eye, target, up, 0.01, 1000);

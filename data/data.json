@@ -11,9 +11,9 @@
             0.6
           ],
           "position": [
-            25.0,
-            48.0,
-            -25.0
+            5.0,
+            2.5,
+            5.0
           ],
           "intensity": 1
         }
@@ -22,9 +22,9 @@
         {
           "name": "teapot",
           "position": [
-            12.0,
-            15.0,
-            -15.0
+            0.0,
+            2.5,
+            5.0
           ],
           "local_transform": {
             "translation": [
@@ -33,12 +33,12 @@
               0.0
             ],
             "rotationX": 0.0,
-            "rotationY": 1.4,
+            "rotationY": 0.0,
             "rotationZ": 0.0,
             "scale": [
-              1.5,
-              1.5,
-              1.5
+              0.05,
+              0.05,
+              0.05
             ]
           },
           "render_obj": {
@@ -49,8 +49,8 @@
           "collider": {
             "name": "sphere",
             "param": [
-              1,
-              1
+              0.5,
+              0.5
             ],
             "transform": {
               "translation": [
@@ -59,12 +59,12 @@
                 0.0
               ],
               "rotationX": 0.0,
-              "rotationY": 1.4,
+              "rotationY": 0.0,
               "rotationZ": 0.0,
               "scale": [
-                1.5,
-                1.5,
-                1.5
+                0.05,
+                0.05,
+                0.05
               ]
             }
           },
@@ -95,8 +95,8 @@
       ],
       "size": [20.0, 6.0, 20.0],
       "texture": "wood1.png",
-      "start_position": [0.0, 0.0],
-      "start_direction": [0.0, 0.0, 1.0]
+      "start_position": [-10.0, 0.0],
+      "start_direction": [2.0, 0.0, 1.0]
     }
   ],
   "player": {
@@ -104,8 +104,8 @@
     "collider": {
       "name": "sphere",
       "param": [
-        1,
-        1
+        3.0,
+        3.0
       ],
       "transform": {
         "translation": [
@@ -114,12 +114,12 @@
           0.0
         ],
         "rotationX": 0.0,
-        "rotationY": 1.4,
+        "rotationY": 0.0,
         "rotationZ": 0.0,
         "scale": [
-          1.5,
-          1.5,
-          1.5
+          0.001,
+          0.001,
+          0.001
         ]
       }
     },
@@ -127,7 +127,7 @@
       "apple",
       "banana"
     ],
-    "height": 0.5,
+    "height": 2.5,
     "render_obj": {
       "mesh": "teapot.obj",
       "texture": "wood1.png",
@@ -143,9 +143,9 @@
       "rotationY": 0.0,
       "rotationZ": 0.0,
       "scale": [
-        1.5,
-        1.5,
-        1.5
+        0.001,
+        0.001,
+        0.001
       ]
     }
   }

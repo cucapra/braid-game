@@ -21,6 +21,9 @@ render.js: sim.braid render.braid
 build/example.js: $(wildcard *.ts) render.js
 	yarn run tsc
 
+build/data_compiler.js: data_compiler.ts
+	yarn run tsc --p data_compiler_tsconfig.json
+
 parser: data_compiler.ts build/data_compiler.js
 	yarn run tsc --p data_compiler_tsconfig.json
 

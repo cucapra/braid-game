@@ -34,7 +34,7 @@ var get_all_triggers = fun -> (
 # return whether a trigger is activated and what the trigger is
 # multiple triggers can happen during one command.
 def simulate_trigger(cmd: String) (#: Bool*(Trigger Array) (
-  if (equal(cmd,"e")) (
+  if (equal(cmd,"r")) (
     action_button = true;0;
   )(0);
   # check all triggers in this room

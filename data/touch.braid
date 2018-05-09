@@ -1,5 +1,5 @@
 var touch_cond = fun -> (
-    true
+    false
 );
 var touch_act = fun -> (
     var a = 1;
