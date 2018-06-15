@@ -1,0 +1,33 @@
+def function1 (cmd: Int) (
+  array(1, 2, 3, 4)
+);
+
+def test_loop(cmds: Int Array) (
+  var array_len = length(cmds);
+  var i = 0;
+  var effective_cmds = array{Int}();
+  var effective_triggers = array(1);
+  while (i <= (array_len-1)) (
+    var cmd = get(cmds, i);
+    var move_record = true, false;
+    if ((move_record).0) (
+      push(effective_cmds, cmd);0
+    ) (0);
+    var trigger_record = function1(cmd);
+    var num_triggers = length(trigger_record);
+    if (num_triggers >= 1) (
+      var res_length = length(trigger_record);
+      var j = 0;
+      while (j <= (res_length-1)) (
+        push(effective_triggers, get(trigger_record, j));
+        j = j+1;
+      );0
+    ) (0);
+    i = i + 1;
+  );
+  effective_cmds, effective_triggers;
+);
+
+render js<
+  test_loop(array(1,2,3));
+>

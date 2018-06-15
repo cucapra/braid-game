@@ -18,6 +18,12 @@ engine: sim.braid render.braid
 render.js: sim.braid render.braid
 	cat $^ | braid -cmw > $@
 
+bug.js: bugtest.braid
+	cat preamble.braid $^ | braid -cmw > $@
+
+bug: example.ts bug.js
+	yarn run tsc --p bug_tsconfig.json
+
 build/example.js: $(wildcard *.ts) render.js
 	yarn run tsc
 

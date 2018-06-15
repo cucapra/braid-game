@@ -1,7 +1,7 @@
 {
   "name": "braid-game",
   "version": "1.0.0",
-  "main": "build/example.js",
+  "main": "build/bug.js",
   "license": "MIT",
   "private": true,
   "dependencies": {
